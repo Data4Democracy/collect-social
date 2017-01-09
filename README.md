@@ -9,7 +9,7 @@ Currently only Facebook is supported, but Twitter will follow shortly.
 This isn't on pypi yet, so first clone this repo into the directory where you'll be working. 
 
 ```bash
-git clone 
+git clone https://github.com/Data4Democracy/collect-social.git
 ```
 
 Then install the requirements using `pip`. 
