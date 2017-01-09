@@ -28,8 +28,8 @@ def setup_db(connection_string):
     comments.create_index(['comment_id'])
     comments.create_index(['post_id'])
     interactions.create_index(['comment_id'])
-	interactions.create_index(['post_id'])
-	interactions.create_index(['user_id']) 
+    interactions.create_index(['post_id'])
+    interactions.create_index(['user_id']) 
 
     return db
 

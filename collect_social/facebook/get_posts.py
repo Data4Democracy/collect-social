@@ -1,11 +1,12 @@
 from __future__ import print_function
 from datetime import datetime
-from collect_fb.facebook.utils import get_graph, setup_db, update_user
+from collect_social.facebook.utils import get_graph, setup_db, update_user
 
 import time
 
 
 def update_post(db,post_data,page_id):
+    posts = db['post']
     post = posts.find_one(post_id=post_data['id'])
         
     if not post:
@@ -54,7 +55,7 @@ def update_post(db,post_data,page_id):
 
 
 def get_posts(graph,db,page_id):
-    limit = 100
+    limit = 20
 
     kwargs = {
         'path': '/'+str(page_id)+'/posts',

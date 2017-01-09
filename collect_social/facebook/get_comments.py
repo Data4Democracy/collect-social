@@ -1,6 +1,6 @@
 from __future__ import print_function
 from datetime import datetime
-from collect_fb.facebook.utils import get_graph, setup_db, update_user
+from collect_social.facebook.utils import get_graph, setup_db, update_user
 
 import time
 
