@@ -15,12 +15,16 @@ git clone https://github.com/Data4Democracy/collect-social.git
 Then install the requirements using `pip`. 
 
 ```bash
+cd collect-social
 pip install -r requirements.txt
+pip install .
 ```
 
 ## Usage
 
 If you haven't already, make sure to create a [Facebook app](https://developers.facebook.com/docs/apps/register) with your Facebook developer account. This will give you an app id and app secret that you'll use to query Facebook's graph API.
+
+
 
 Note that you'll only be able to retrieve content from public pages that allow API access. 
 
@@ -33,14 +37,22 @@ from collect_social.facebook import get_posts
 
 app_id = <YOUR APP ID>
 app_secret = <YOUR APP SECRET>
-connection_string = 'sqlite:///full-path-to-an-existing-database-file.sqlite'
+connection_string = 'sqlite:////full/path/to/an/existing/database-file.sqlite'
 page_ids = [<page id 1>,<page id 2>]
 
 get_posts.run(app_id,app_secret,connection_string,page_ids)
 ```
 
+If you don't have an existing database, create one with `sqlite3 database-file.sqlite ""`.
+
 This will run until it has collected all of the posts from each of the pages in your `page_ids` list. It will create `post`, `page`, and `user` tables in the sqlite database created in/opened from the file passed in `connection_string`. 
 Note: Enter the app_id and app_secret values under single apostrophes. (' ' ).
+
+Check the success of your program by viewing the first 10 posts:
+```shell
+sqlite3 database-file.sqlite "SELECT  message FROM post LIMIT 10"
+```
+
 ### Retrieving comments
 
 This will retrieve all the comments (including threaded replies) for a list of posts. You can optionally provide a `max_comments` value, which is helpful if you're grabbing comments from the Facebook page of a public figure, where posts often get tens of thousands of comments.
