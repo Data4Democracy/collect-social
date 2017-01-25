@@ -1,5 +1,5 @@
 import tweepy
-import collect_social.stores.sqlite 
+import dataset
 
 # unicode mgmt
 import sys
@@ -16,9 +16,12 @@ topics = ["alted"]
 search = api.search(q=topics, count=100)
 
 def setup_db(connection_string):
-    db = sqlite.connect(connection_string)
+    db = sqlite_connect(connection_string)
     setup_sqlite(db)
     return db
+
+def sqlite_connect(connection_string):
+    return dataset.connect(connection_string)
 
 def setup_sqlite(db):
     tweet_table = db['tweet']
