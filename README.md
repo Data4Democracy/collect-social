@@ -6,16 +6,16 @@ Currently only Facebook is supported, but Twitter will follow shortly.
 
 ## Setup
 
-This isn't on pypi yet, so first clone this repo into the directory where you'll be working. 
-
 ```bash
 git clone https://github.com/Data4Democracy/collect-social.git
 ```
 
-Then install the requirements using `pip`. 
+Then install the package using `pip`. This will allow you import `collect_social` from any python script.
 
 ```bash
+cd collect-social
 pip install -r requirements.txt
+pip install .
 ```
 
 ## Usage
@@ -29,17 +29,25 @@ Note that you'll only be able to retrieve content from public pages that allow A
 You can retrieve posts using Facebook page ids. Note that the page id isn't the same as page name in the URL. For example [Justin Beiber's page name is JustinBieber](https://www.facebook.com/JustinBieber), but the page id is `67253243887`. You can find a page's id by looking at the source HTML at doing a ctrl+f (find in page) for `pageid`. [Here's a longer explanation](http://hellboundbloggers.com/2010/07/find-facebook-profile-and-page-id-8516/). 
 
 ```python
-from collect_social.facebook get_posts
+from collect_social.facebook import get_posts
 
-app_id = <YOUR APP ID>
-app_secret = <YOUR APP SECRET>
-connection_string = 'sqlite:///full-path-to-an-existing-database-file.sqlite'
-page_ids = [<page id 1>,<page id 2>]
+app_id = '<YOUR APP ID>'
+app_secret = '<YOUR APP SECRET>'
+connection_string = 'sqlite:////full/path/to/a/database-file.sqlite'
+page_ids = ['<page id 1>','<page id 2>']
 
 get_posts.run(app_id,app_secret,connection_string,page_ids)
 ```
 
-This will run until it has collected all of the posts from each of the pages in your `page_ids` list. It will create `post`, `page`, and `user` tables in the sqlite database created in/opened from the file passed in `connection_string`. 
+This will run until it has collected all of the posts from each of the pages in your `page_ids` list. It will create `post`, `page`, and `user` tables in the sqlite database from the file passed in `connection_string`. 
+The database will be created if it does not already exist.
+Note: The `app_id`, `app_secret` and elements in the `page_ids` list are all strings, and should be quoted (' ' or " ").
+
+If you like, quickly check the success of your program by viewing the first 10 posts:
+
+```shell
+sqlite3 database-file.sqlite "SELECT  message FROM post LIMIT 10"
+```
 
 ### Retrieving comments
 
@@ -48,10 +56,10 @@ This will retrieve all the comments (including threaded replies) for a list of p
 ```python
 from collect_social.facebook import get_comments
 
-app_id = <YOUR APP ID>
-app_secret = <YOUR APP SECRET>
-connection_string = 'sqlite:///full-path-to-an-existing-database-file.sqlite'
-post_ids = [<post id 1>,<post id 2>]
+app_id = '<YOUR APP ID>'
+app_secret = '<YOUR APP SECRET>'
+connection_string = 'sqlite:////full/path/to/a/database-file.sqlite'
+post_ids = ['<post id 1>','<post id 2>']
 
 get_comments.run(app_id,app_secret,connection_string,post_ids,max_comments=5000)
 ```
@@ -65,10 +73,10 @@ Reactions are "likes" and all the other happy/sad/angry/whatever responses that 
 ```python
 from collect_social.facebook import get_reactions
 
-app_id = <YOUR APP ID>
-app_secret = <YOUR APP SECRET>
-connection_string = 'sqlite:///full-path-to-an-existing-database-file.sqlite'
-post_ids = [<post id 1>,<post id 2>]
+app_id = '<YOUR APP ID>'
+app_secret = '<YOUR APP SECRET>'
+connection_string = 'sqlite:////full/path/to/a/database-file.sqlite'
+post_ids = ['<post id 1>','<post id 2>']
 
 get_reactions.run(app_id,app_secret,connection_string,post_ids,max_comments=5000)
 ```
