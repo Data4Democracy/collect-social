@@ -10,7 +10,7 @@ Currently only Facebook is supported, but Twitter will follow shortly.
 git clone https://github.com/Data4Democracy/collect-social.git
 ```
 
-Then install the package using `pip`. 
+Then install the package using `pip`. This will allow you import `collect_social` from any python script.
 
 ```bash
 cd collect-social
