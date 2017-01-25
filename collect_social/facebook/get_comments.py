@@ -8,7 +8,7 @@ import time
 def update_comment(db,comment_data,post_id,parent=None):
     comments = db['comment']
     comment = comments.find_one(comment_id=comment_data['id'])
-        
+
     if not comment:
         fields = [
                     'comment_count',
@@ -29,14 +29,14 @@ def update_comment(db,comment_data,post_id,parent=None):
         if 'from' in comment_data and 'id' in comment_data['from']:
             data['author_id'] = comment_data['from']['id']
             author_id = data['author_id']
-            update_user(db,omment_data['from'])
+            update_user(db,comment_data['from'])
 
         for f in fields:
             if f in comment_data:
                 data[f] = comment_data[f]
 
 
-        comments.insert(data, ensure=True) 
+        comments.insert(data, ensure=True)
 
 
 def get_comments(graph,db,post_id,i=0,after=None,parent=None,max_comments=5000):
@@ -67,26 +67,27 @@ def get_comments(graph,db,post_id,i=0,after=None,parent=None,max_comments=5000):
                     return
 
             if not parent and 'comment_count' in comment and \
-                comment['comment_count'] > 0:                
+                comment['comment_count'] > 0:
                 get_comments(graph,db,comment['id'],parent=comment['id'])
-        
+
         if len(post_comments) == limit:
             _after = post_data['paging']['cursors']['after']
-            
+
             time.sleep(1)
             get_comments(graph,db,post_id,i=i,after=_after,parent=parent)
-    except Exception, e:
+    except Exception as e:
         print(e)
         pass
 
 
-def run(app_id,app_secret,connection_string,post_ids,max_comments=5000):
+def run(app_id,app_secret,connection_string,post_ids,max_comments=5000, i=0):
     db = setup_db(connection_string)
     graph = get_graph(app_id,app_secret)
 
     comments = db['comment']
 
     for post_id in post_ids:
+        i += 1
         existing_comments = comments.find_one(post_id=post_id)
         if existing_comments:
             continue
