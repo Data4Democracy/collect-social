@@ -1,5 +1,7 @@
 # Collect Social: Simply collect public social media content 
 
+[![Build Status](https://travis-ci.org/Data4Democracy/collect-social.svg?branch=master)](https://travis-ci.org/Data4Democracy/collect-social)
+
 Getting content from social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. For example, tasks like grabbing all the posts and comments from a handful of Facebook pages, and dumping the results into a sqlite database. 
 
 Currently only Facebook is supported, but Twitter will follow shortly.
@@ -17,6 +19,15 @@ cd collect-social
 pip install -r requirements.txt
 pip install .
 ```
+
+### Testing
+
+Run tests with:
+```bash
+pytest
+```
+
+Contributors should add tests to the `tests` directory.
 
 ## Usage
 
