@@ -22,9 +22,13 @@ pip install .
 
 ### Testing
 
-Run tests with:
+To run tests only:
 ```bash
 pytest
+```
+To run tests with coverage report use shell script:
+```bash
+./run_tests
 ```
 
 Contributors should add tests to the `tests` directory.

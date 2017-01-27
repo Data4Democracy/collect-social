@@ -1,0 +1,2 @@
+#!/bin/sh
+python -m pytest --cov-report term-missing --cov collect_social
