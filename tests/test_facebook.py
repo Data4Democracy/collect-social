@@ -1,5 +1,4 @@
 import pytest
-import collect_social
 from collect_social.facebook import utils
 
 @pytest.fixture
