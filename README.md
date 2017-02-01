@@ -1,15 +1,16 @@
 # Collect Social: Simply collect public social media content
 
+[![Build Status](https://travis-ci.org/Data4Democracy/collect-social.svg?branch=master)](https://travis-ci.org/Data4Democracy/collect-social)
+
+
 **Maintainers:** Maintainers have write access to the repository. They are responsible for reviewing pull requests, providing feedback and ensuring consistency.
 
 * [@bstarling](https://datafordemocracy.slack.com/messages/@bstarling/)
 * [@nick](https://datafordemocracy.slack.com/messages/@nick/)
-* [@sjackson](https://datafordemocracy.slack.com/messages/@sjackson/)
 * [@asragab](https://datafordemocracy.slack.com/messages/@asragab/)
 * [@metame](https://datafordemocracy.slack.com/messages/@metame/)
 
 
-[![Build Status](https://travis-ci.org/Data4Democracy/collect-social.svg?branch=master)](https://travis-ci.org/Data4Democracy/collect-social)
 
 Getting content from social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. For example, tasks like grabbing all the posts and comments from a handful of Facebook pages, and dumping the results into a sqlite database.
 
