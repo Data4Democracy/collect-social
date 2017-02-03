@@ -14,19 +14,15 @@ def get_api(consumer_key,consumer_secret,access_token,access_token_secret):
     return tweepy.API(auth)
 
 
-def sqlite_connect(connection_string):
-    return dataset.connect(connection_string)
-
-
-def setup_sqlite(db):
+def setup_tables(db):
     tweet_table = db['tweet']
     tweet_table.create_index(['id_str'])
     tweet_table.create_index(['user_id'])
 
 
 def setup_db(connection_string):
-    db = sqlite_connect(connection_string)
-    setup_sqlite(db)
+    db = dataset.connect(connection_string)
+    setup_tables(db)
     return db
 
 
