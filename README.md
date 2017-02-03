@@ -1,8 +1,18 @@
-# Collect Social: Simply collect public social media content 
+# Collect Social: Simply collect public social media content
 
 [![Build Status](https://travis-ci.org/Data4Democracy/collect-social.svg?branch=master)](https://travis-ci.org/Data4Democracy/collect-social)
 
-Getting content from social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. For example, tasks like grabbing all the posts and comments from a handful of Facebook pages, and dumping the results into a sqlite database. 
+
+**Maintainers:** Maintainers have write access to the repository. They are responsible for reviewing pull requests, providing feedback and ensuring consistency.
+
+* [@bstarling](https://datafordemocracy.slack.com/messages/@bstarling/)
+* [@nick](https://datafordemocracy.slack.com/messages/@nick/)
+* [@asragab](https://datafordemocracy.slack.com/messages/@asragab/)
+* [@metame](https://datafordemocracy.slack.com/messages/@metame/)
+
+
+
+Getting content from social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. For example, tasks like grabbing all the posts and comments from a handful of Facebook pages, and dumping the results into a sqlite database.
 
 
 ## Setup
@@ -39,11 +49,11 @@ Contributors should add tests to the `tests` directory.
 
 If you haven't already, make sure to create a [Facebook app](https://developers.facebook.com/docs/apps/register) with your Facebook developer account. This will give you an app id and app secret that you'll use to query Facebook's graph API.
 
-Note that you'll only be able to retrieve content from public pages that allow API access. 
+Note that you'll only be able to retrieve content from public pages that allow API access.
 
 #### Retrieving posts
 
-You can retrieve posts using Facebook page ids. Note that the page id isn't the same as page name in the URL. For example [Justin Beiber's page name is JustinBieber](https://www.facebook.com/JustinBieber), but the page id is `67253243887`. You can find a page's id by looking at the source HTML at doing a ctrl+f (find in page) for `pageid`. [Here's a longer explanation](http://hellboundbloggers.com/2010/07/find-facebook-profile-and-page-id-8516/). 
+You can retrieve posts using Facebook page ids. Note that the page id isn't the same as page name in the URL. For example [Justin Beiber's page name is JustinBieber](https://www.facebook.com/JustinBieber), but the page id is `67253243887`. You can find a page's id by looking at the source HTML at doing a ctrl+f (find in page) for `pageid`. [Here's a longer explanation](http://hellboundbloggers.com/2010/07/find-facebook-profile-and-page-id-8516/).
 
 ```python
 from collect_social.facebook import get_posts
@@ -56,7 +66,7 @@ page_ids = ['<page id 1>','<page id 2>']
 get_posts.run(app_id,app_secret,connection_string,page_ids)
 ```
 
-This will run until it has collected all of the posts from each of the pages in your `page_ids` list. It will create `post`, `page`, and `user` tables in the sqlite database from the file passed in `connection_string`. 
+This will run until it has collected all of the posts from each of the pages in your `page_ids` list. It will create `post`, `page`, and `user` tables in the sqlite database from the file passed in `connection_string`.
 The database will be created if it does not already exist.
 Note: The `app_id`, `app_secret` and elements in the `page_ids` list are all strings, and should be quoted (' ' or " ").
 
@@ -118,8 +128,7 @@ topics = ['<hashtag or string to search for>']
 
 search_tweets.run(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET,connection_string,topics,count=100)
 ```
-You can reference [`tweet_model.py`](collect_social/twitter/tweet_model.py) to see what fields are stored. 
+You can reference [`tweet_model.py`](collect_social/twitter/tweet_model.py) to see what fields are stored.
 Twitter topic streaming coming soon.
 
-More social media platforms coming soon. In the meantime, please [let me know](https://twitter.com/jonathonmorgan) if there's anything in particular you'd like to see. 
-
+More social media platforms coming soon. In the meantime, please [let me know](https://twitter.com/jonathonmorgan) if there's anything in particular you'd like to see.
