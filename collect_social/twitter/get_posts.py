@@ -1,0 +1,1 @@
+## get_posts returns a list of statuses/posts from a user id

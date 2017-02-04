@@ -1,0 +1,1 @@
+## get_users returns a list of users by a list of handles/ids
