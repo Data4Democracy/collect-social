@@ -19,8 +19,8 @@ def map_user(twitter_user):
     }
 
 
-def map_followers(twitter_followers):
-    return [map_user(follower) for follower in twitter_followers]
+def map_users(twitter_users):
+    return [map_user(user) for user in twitter_users]
 
 
 def map_following(twitter_following):
@@ -85,8 +85,8 @@ class Twitter(object):
         Params: id
         Returns: dict
         """
-        tweepy_user = self._api.get_user(handle)
-        return map_user(tweepy_user)
+        twitter_user = self._api.get_user(handle)
+        return map_user(twitter_user)
 
     def get_users(self, id_list):
         """
@@ -104,13 +104,18 @@ class Twitter(object):
         for page in tweepy.Cursor(self._api.followers, id=user_id).pages():
             followers.extend(page)
 
-        return map_followers(followers)
+        return map_users(followers)
 
     def get_following(self, user_id):
         """
         Params: id
         Returns: dict[ ]
         """
+        following = []
+        for page in tweepy.Cursor(self._api.friends, user_id).pages():
+            following.extend(page)
+
+        return map_users(following)
 
     def get_comments(self, post_id):
         """

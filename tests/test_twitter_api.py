@@ -70,6 +70,9 @@ def test_map_post():
 def test_map_user():
     assert map_user(twitter_user())
 
-
 def test_map_followers():
     assert map_followers([twitter_user()])
+
+def test_map_users():
+    assert map_users([twitter_user()])
+
