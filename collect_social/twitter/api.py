@@ -58,11 +58,7 @@ class Twitter(object):
         Params: id[ ]
         Returns: dict[ ]
         """
-        twitter_posts = []
-        for page in tweepy.Cursor(self._api.user_timeline, id=user_id).pages():
-            twitter_posts.extend(page)
-
-        return map_posts(twitter_posts)
+        pass
 
     def get_user(self, handle):
         """
