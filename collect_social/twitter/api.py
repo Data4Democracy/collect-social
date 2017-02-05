@@ -20,44 +20,12 @@ def map_user(twitter_user):
 
 
 def map_posts(twitter_posts):
-    return [map_post(twitter_post) for twitter_post in twitter_posts]
+    # return d4d.Post
+    pass
 
 
 def map_users(twitter_users):
     return [map_user(user) for user in twitter_users]
-
-
-def map_post(twitter_post):
-    return {
-        'user': map_user(twitter_post.user),
-        'message': twitter_post.text,
-        'tweet_id': twitter_post.id_str,
-        'language': twitter_post.lang,
-        'post_created': twitter_post.created_at,
-        'geo_coordinates': twitter_post.coordinates,
-        'hashtags': [hashtag['text'] for hashtag in twitter_post.entities.get('hashtags')],
-        'user_mentions': [user['screen_name'] for user in twitter_post.entities.get('user_mentions')],
-        'urls': [url['expanded_url'] for url in twitter_post.entities.get('urls')],
-        'favorites_counts': twitter_post.favorite_count,
-        'retweets_count': twitter_post.retweet_count,
-        'in_reply_to_screen_name': twitter_post.in_reply_to_screen_name,
-        'in_reply_to_status_id': twitter_post.in_reply_to_status_id_str,
-        'is_retweet': twitter_post.retweeted,
-        'place': map_place(twitter_post.place )if twitter_post.place else None
-    }
-
-
-def map_place(place):
-    return {
-        'place_id': place.id,
-        'attributes': place.attributes,
-        'country': place.country,
-        'country_code': place.country_code,
-        'full_name': place.full_name,
-        'name': place.name,
-        'place_type': place.place_type,
-        'url': place.url
-    }
 
 
 def map_comment(twitter_post):
