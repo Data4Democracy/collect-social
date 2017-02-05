@@ -1,5 +1,5 @@
 import pytest
-from collect_social.twitter.api import map_user, map_followers
+from collect_social.twitter.api import map_user, map_users
 
 
 class User:
@@ -34,5 +34,6 @@ def test_map_user():
     assert map_user(twitter_user())
 
 
-def test_map_followers():
-    assert map_followers([twitter_user()])
+def test_map_users():
+    assert map_users([twitter_user()])
+
