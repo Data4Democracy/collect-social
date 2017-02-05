@@ -19,13 +19,18 @@ def map_user(twitter_user):
     }
 
 
-def map_posts(twitter_posts):
-    # return d4d.Post
+def map_users(twitter_users):
+    return [map_user(user) for user in twitter_users]
+
+
+def map_following(twitter_following):
+    # return d4d.Following
     pass
 
 
-def map_users(twitter_users):
-    return [map_user(user) for user in twitter_users]
+def map_post(twitter_post):
+    # return d4d.Post
+    pass
 
 
 def map_comment(twitter_post):
