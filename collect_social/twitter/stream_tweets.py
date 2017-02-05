@@ -1,0 +1,1 @@
+## stream_tweets uses the twitter streaming api to retrieve tweets for a certain query
