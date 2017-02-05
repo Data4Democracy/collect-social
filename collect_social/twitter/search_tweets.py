@@ -1,11 +1,6 @@
 import tweepy
 import dataset
-from tweet_model import map_tweet
-
-# unicode mgmt
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+from collect_social.twitter.tweet_model import map_tweet
 
 # auth & api handlers
 def get_api(consumer_key,consumer_secret,access_token,access_token_secret):
@@ -31,10 +26,10 @@ def upsert_tweets(tweets,db,topics):
         return None
 
     tweet_table = db['tweet']
-    
+
     for tweet in tweets:
         if (not tweet.retweeted) and ('RT @' not in tweet.text):
-            tweet_table.upsert(map_tweet(tweet,topics), ["id_str"])        
+            tweet_table.upsert(map_tweet(tweet,topics), ["id_str"])
 
 
 def run(consumer_key,consumer_secret,access_token,access_token_secret,connection_string,topics,count=100):
