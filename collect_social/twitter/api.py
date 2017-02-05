@@ -29,9 +29,18 @@ def map_following(twitter_following):
 
 
 def map_post(twitter_post):
-    # return d4d.Post
-    pass
+    # could be extended/altered in the future
+    return {
+	'id_str': twitter_post.id_str,
+        'user_id': twitter_post.user.id_str,
+        'text': twitter_post.text,
+        'created_at': twitter_post.created_at,
+        'retweet_count': twitter_post.retweet_count,
+        'favorite_count': twitter_post.favorite_count,
+    }
 
+def map_posts(twitter_posts):
+    return [map_post(post) for post in twitter_posts]
 
 def map_comment(twitter_post):
     # return d4d.Comment
@@ -56,14 +65,20 @@ class Twitter(object):
         Params: id
         Returns: dict
         """
-        pass
+        return map_post(self._api.get_status(id))
 
     def get_posts(self, user_id):
         """
-        Params: id[ ]
+        Params: id
         Returns: dict[ ]
         """
-        pass
+	# NOTE: will download all non-retweets of the past 3200 posts 
+	# from user_id
+        posts = []
+	for page in tweepy.Cursor(self._api.user_timeline, id=user_id).pages():
+		posts.extend(page)
+
+	return map_posts(posts)
 
     def get_user(self, handle):
         """
