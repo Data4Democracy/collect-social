@@ -7,15 +7,6 @@ class User:
         self.__dict__.update(entries)
 
 
-class Status:
-    def __init__(self,**entries):
-        self.__dict__.update(entries)
-
-
-class Place:
-    def __init__(self,**entries):
-        self.__dict__.update(entries)
-
 @pytest.fixture
 def twitter_user():
     user_dict = {
