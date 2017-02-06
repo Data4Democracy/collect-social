@@ -1,5 +1,5 @@
 import pytest
-from collect_social.twitter.api import map_post, map_user, map_users
+from collect_social.twitter.api import map_post, map_user, map_users, map_reactions
 
 
 class User:
@@ -9,6 +9,11 @@ class User:
 class Status:
     def __init__(self, **entries):
         self.__dict__.update(entries)
+
+class Tweet:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
 
 @pytest.fixture
 def twitter_user():
@@ -59,7 +64,6 @@ def twitter_status():
 
     }
 
-
     status = (Status(**status_dict))
     status.user = (User(**user_dict))
     return status
@@ -72,3 +76,8 @@ def test_map_user():
 
 def test_map_users():
     assert map_users([twitter_user()])
+
+def test_map_reactions():
+    reactions = map_reactions(twitter_status())
+    assert reactions['pos_sentiment'] == 55
+    assert reactions['native']['platform'] == 'twitter'

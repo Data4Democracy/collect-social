@@ -48,8 +48,14 @@ def map_comment(twitter_post):
 
 
 def map_reactions(twitter_post):
-    # return d4d.Reactions
-    pass
+    return {
+        'pos_sentiment': twitter_post.retweet_count + twitter_post.favorite_count,
+        'native': {
+                'platform': 'twitter',
+                'retweet_count': twitter_post.retweet_count,
+                'favorite_count': twitter_post.favorite_count
+        }
+    }
 
 
 class Twitter(object):
