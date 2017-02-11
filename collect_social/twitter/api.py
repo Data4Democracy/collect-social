@@ -25,6 +25,26 @@ def twitter_engagement(twitter_user):
     return engagement
 
 
+def check_original_content(status):
+    # assume it is not reply/quote
+    content_type, orig_id, orig_content = None, None, None
+
+    # check if quote
+    if hasattr(status, 'quoted_status_id'):
+        content_type = 'quote'
+        orig_id = status.quoted_status_id
+        orig_content = status.quoted_status['text']
+
+    # check if reply
+    # API returns "Null" if not reply. Tweepy status always hasattr in_reply_to_user_id
+    if status.in_reply_to_user_id is not None:
+        content_type = 'reply'
+        orig_id = status.in_reply_to_user_id
+        # orig_content N/A for replies
+
+    return content_type, orig_id, orig_content
+
+
 def map_asset(kind, location):
     """Create asset"""
     asset_types = ['href', 's3', 'db']
@@ -90,6 +110,8 @@ def map_content_meta(entities):
 
 
 def map_post(twitter_post):
+    content_type, orig_content_id, orig_content = check_original_content(twitter_post)
+
     return {
             'platform': 'twitter',
             'source': 'placeholder', # TODO
@@ -99,8 +121,9 @@ def map_post(twitter_post):
             'content_id': twitter_post.id,
             'created_at': twitter_post.created_at.isoformat(),
             'updated_at': datetime.datetime.utcnow().isoformat(),
-            'is_reply': False if twitter_post.in_reply_to_status_id is None else True,
-            'original_content_id': None if twitter_post.in_reply_to_status_id is None else twitter_post.in_reply_to_status_id,
+            'reply_type': None if content_type is None else content_type,
+            'original_content_id': None if orig_content_id is None else orig_content_id,
+            'original_content_text': None if orig_content is None else orig_content,
             'text': twitter_post.text,
             # media : ???
             'reactions': map_reactions(twitter_post),
@@ -219,8 +242,7 @@ class Twitter(object):
             if true, append native tweet object to each post object
         :return: list of replies to post ID
         """
-
-        pass
+        # TODO Twitter does not offer clean solution to get replies
 
     def get_reaction(self, post_id, native=False):
         """

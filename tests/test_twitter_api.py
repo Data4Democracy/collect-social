@@ -1,7 +1,7 @@
 import pytest
 import datetime
 from collect_social.twitter.api import (map_post, map_user, map_users, map_reactions,
-        map_reactions_native)
+        map_reactions_native, check_original_content)
 
 
 class User:
@@ -44,7 +44,7 @@ def twitter_user():
 
 
 def twitter_status():
-    # TODO need to mock twitter status??
+    # TODO need to mock actual twitter status??
     status_dict = {
         'id_str': '40977446',
         'user_id': '78910',
@@ -52,6 +52,7 @@ def twitter_status():
         'created_at': '2009-05-18 21:48:17.000000',
         'retweet_count': 5,
         'favorite_count': 50,
+        'in_reply_to_user_id': 1337
     }
 
     user_dict = {
@@ -102,3 +103,13 @@ def test_map_reactions():
 def test_map_reactions_platform_native():
     reactions = map_reactions_native(twitter_status())
     assert reactions['platform'] == 'twitter'
+
+
+def test_check_original_content_reply():
+    original_content = check_original_content(twitter_status())
+    assert original_content == ('reply', 1337, None)
+
+
+@pytest.mark.skip(reason="Solve issue with all tweets having attribute in_reply_to_user_id")
+def test_check_original_content_quote():
+    pass
