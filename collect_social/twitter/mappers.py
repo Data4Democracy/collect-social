@@ -1,3 +1,5 @@
+# CURRENTLY UNUSED - LEGACY MAPPING CODE
+
 
 def map_location(twitter_user):
     # TODO Location is user entered, will have to consider parsing in post processing
