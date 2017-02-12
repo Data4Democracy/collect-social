@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Authorization: ['OAuth oauth_nonce="109059257061424551491486927609", oauth_timestamp="1486927609",
+          oauth_version="1.0", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="0fngiUDRpkq68hmPX1lyRqZtd",
+          oauth_token="461594173-50IBMOTeth0q2dS8UCtVH3zuXP5KPPmKGca25lAz", oauth_signature="oksVmmjTAUkDgveCKi99imVCJk4%3D"']
+      Host: [api.twitter.com]
+    method: GET
+    uri: https://api.twitter.com/1.1/statuses/show.json?id=830798975171174404
+  response:
+    body: {string: '{"created_at":"Sun Feb 12 15:21:25 +0000 2017","id":830798975171174404,"id_str":"830798975171174404","text":"A
+        national hero! @RevDrBarber #AMJoy #MoralMarch https:\/\/t.co\/3NmIuc5iZr","truncated":false,"entities":{"hashtags":[{"text":"AMJoy","indices":[30,36]},{"text":"MoralMarch","indices":[37,48]}],"symbols":[],"user_mentions":[{"screen_name":"RevDrBarber","name":"Rev.
+        Dr. Barber","id":2400284491,"id_str":"2400284491","indices":[17,29]}],"urls":[{"url":"https:\/\/t.co\/3NmIuc5iZr","expanded_url":"https:\/\/twitter.com\/amjoyshow\/status\/830794950967177216","display_url":"twitter.com\/amjoyshow\/stat\u2026","indices":[49,72]}]},"source":"\u003ca
+        href=\"http:\/\/twitter.com\/#!\/download\/ipad\" rel=\"nofollow\"\u003eTwitter
+        for iPad\u003c\/a\u003e","in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":23706604,"id_str":"23706604","name":"Kat
+        Dub","screen_name":"TheKatWill","location":"Cleveland, OH","description":"","url":null,"entities":{"description":{"urls":[]}},"protected":false,"followers_count":286,"friends_count":172,"listed_count":49,"created_at":"Wed
+        Mar 11 02:23:51 +0000 2009","favourites_count":9270,"utc_offset":-18000,"time_zone":"Eastern
+        Time (US & Canada)","geo_enabled":false,"verified":false,"statuses_count":20604,"lang":"en","contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"C0DEED","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":false,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/1798360870\/image_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1798360870\/image_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/23706604\/1485927243","profile_link_color":"1DA1F2","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"has_extended_profile":false,"default_profile":true,"default_profile_image":false,"following":false,"follow_request_sent":false,"notifications":false,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":true,"quoted_status_id":830794950967177216,"quoted_status_id_str":"830794950967177216","quoted_status":{"created_at":"Sun
+        Feb 12 15:05:26 +0000 2017","id":830794950967177216,"id_str":"830794950967177216","text":".@REVDRBARBER:
+        We are not partisan. We are principled. RETWEET TO AGREE! #MoralMarch #AMJoy
+        https:\/\/t.co\/qpN4kZNZ3Q","truncated":false,"entities":{"hashtags":[{"text":"MoralMarch","indices":[73,84]},{"text":"AMJoy","indices":[85,91]}],"symbols":[],"user_mentions":[{"screen_name":"RevDrBarber","name":"Rev.
+        Dr. Barber","id":2400284491,"id_str":"2400284491","indices":[1,13]}],"urls":[],"media":[{"id":830794877868847104,"id_str":"830794877868847104","indices":[92,115],"media_url":"http:\/\/pbs.twimg.com\/media\/C4eTiiiWMAACQit.jpg","media_url_https":"https:\/\/pbs.twimg.com\/media\/C4eTiiiWMAACQit.jpg","url":"https:\/\/t.co\/qpN4kZNZ3Q","display_url":"pic.twitter.com\/qpN4kZNZ3Q","expanded_url":"https:\/\/twitter.com\/amjoyshow\/status\/830794950967177216\/photo\/1","type":"photo","sizes":{"medium":{"w":635,"h":323,"resize":"fit"},"thumb":{"w":150,"h":150,"resize":"crop"},"large":{"w":635,"h":323,"resize":"fit"},"small":{"w":635,"h":323,"resize":"fit"}}}]},"extended_entities":{"media":[{"id":830794877868847104,"id_str":"830794877868847104","indices":[92,115],"media_url":"http:\/\/pbs.twimg.com\/media\/C4eTiiiWMAACQit.jpg","media_url_https":"https:\/\/pbs.twimg.com\/media\/C4eTiiiWMAACQit.jpg","url":"https:\/\/t.co\/qpN4kZNZ3Q","display_url":"pic.twitter.com\/qpN4kZNZ3Q","expanded_url":"https:\/\/twitter.com\/amjoyshow\/status\/830794950967177216\/photo\/1","type":"photo","sizes":{"medium":{"w":635,"h":323,"resize":"fit"},"thumb":{"w":150,"h":150,"resize":"crop"},"large":{"w":635,"h":323,"resize":"fit"},"small":{"w":635,"h":323,"resize":"fit"}}}]},"source":"\u003ca
+        href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e","in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":731132367058968576,"id_str":"731132367058968576","name":"AM
+        Joy w\/Joy Reid","screen_name":"amjoyshow","location":"New York, NY","description":"@JoyAnnReid
+        hosts ''AM JOY'' every Saturday and Sunday, 10 am-12 pm ET on @msnbc. Follow
+        the stimulating conversation on #AMJoy. Find Joy on Snapchat: joyannreid","url":"https:\/\/t.co\/cgfLYp9JFL","entities":{"url":{"urls":[{"url":"https:\/\/t.co\/cgfLYp9JFL","expanded_url":"http:\/\/joy.msnbc.com","display_url":"joy.msnbc.com","indices":[0,23]}]},"description":{"urls":[]}},"protected":false,"followers_count":85914,"friends_count":1165,"listed_count":771,"created_at":"Fri
+        May 13 14:41:54 +0000 2016","favourites_count":749,"utc_offset":-28800,"time_zone":"Pacific
+        Time (US & Canada)","geo_enabled":false,"verified":true,"statuses_count":6699,"lang":"en","contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"F5F8FA","profile_background_image_url":null,"profile_background_image_url_https":null,"profile_background_tile":false,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/792717505097822213\/I1MqzYtD_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/792717505097822213\/I1MqzYtD_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/731132367058968576\/1477833751","profile_link_color":"1DA1F2","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"has_extended_profile":false,"default_profile":true,"default_profile_image":false,"following":false,"follow_request_sent":false,"notifications":false,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":false,"retweet_count":626,"favorite_count":528,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"en"},"retweet_count":129,"favorite_count":207,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"en"}'}
+    headers:
+      cache-control: ['no-cache, no-store, must-revalidate, pre-check=0, post-check=0']
+      content-disposition: [attachment; filename=json.json]
+      content-length: ['6550']
+      content-type: [application/json;charset=utf-8]
+      date: ['Sun, 12 Feb 2017 19:26:49 GMT']
+      expires: ['Tue, 31 Mar 1981 05:00:00 GMT']
+      last-modified: ['Sun, 12 Feb 2017 19:26:49 GMT']
+      pragma: [no-cache]
+      server: [tsa_b]
+      set-cookie: [lang=en; Path=/, 'guest_id=v1%3A148692760967543338; Domain=.twitter.com;
+          Path=/; Expires=Tue, 12-Feb-2019 19:26:49 UTC']
+      status: [200 OK]
+      strict-transport-security: [max-age=631138519]
+      x-access-level: [read-write]
+      x-connection-hash: [2c3f4070739ca0801373516b48b1e7f7]
+      x-content-type-options: [nosniff]
+      x-frame-options: [SAMEORIGIN]
+      x-rate-limit-limit: ['900']
+      x-rate-limit-remaining: ['899']
+      x-rate-limit-reset: ['1486928509']
+      x-response-time: ['230']
+      x-transaction: [0096fec800d21072]
+      x-twitter-response-tags: [BouncerCompliant]
+      x-xss-protection: [1; mode=block]
+    status: {code: 200, message: OK}
+version: 1

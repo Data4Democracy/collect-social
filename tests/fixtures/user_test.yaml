@@ -2,9 +2,9 @@ interactions:
 - request:
     body: null
     headers:
-      Authorization: ['OAuth oauth_nonce="126896988035714536551486908126", oauth_timestamp="1486908126",
+      Authorization: ['OAuth oauth_nonce="158896603641790517411486927609", oauth_timestamp="1486927609",
           oauth_version="1.0", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="0fngiUDRpkq68hmPX1lyRqZtd",
-          oauth_token="461594173-50IBMOTeth0q2dS8UCtVH3zuXP5KPPmKGca25lAz", oauth_signature="o326BZwdPa1b%2FrEWt07plxtpdrE%3D"']
+          oauth_token="461594173-50IBMOTeth0q2dS8UCtVH3zuXP5KPPmKGca25lAz", oauth_signature="b%2BHdgY73DG0ZMf4WlkRmwPghWik%3D"']
       Host: [api.twitter.com]
     method: GET
     uri: https://api.twitter.com/1.1/users/show.json?id=bstarling_
@@ -25,24 +25,24 @@ interactions:
       content-disposition: [attachment; filename=json.json]
       content-length: ['2724']
       content-type: [application/json;charset=utf-8]
-      date: ['Sun, 12 Feb 2017 14:02:06 GMT']
+      date: ['Sun, 12 Feb 2017 19:26:49 GMT']
       expires: ['Tue, 31 Mar 1981 05:00:00 GMT']
-      last-modified: ['Sun, 12 Feb 2017 14:02:06 GMT']
+      last-modified: ['Sun, 12 Feb 2017 19:26:49 GMT']
       pragma: [no-cache]
       server: [tsa_b]
-      set-cookie: [lang=en; Path=/, 'guest_id=v1%3A148690812677584489; Domain=.twitter.com;
-          Path=/; Expires=Tue, 12-Feb-2019 14:02:06 UTC']
+      set-cookie: [lang=en; Path=/, 'guest_id=v1%3A148692760945553320; Domain=.twitter.com;
+          Path=/; Expires=Tue, 12-Feb-2019 19:26:49 UTC']
       status: [200 OK]
       strict-transport-security: [max-age=631138519]
       x-access-level: [read-write]
-      x-connection-hash: [41cdd377c3316b576e7dda55b9f18ba3]
+      x-connection-hash: [9b7eb64aec618ec37da99465b5c54eee]
       x-content-type-options: [nosniff]
       x-frame-options: [SAMEORIGIN]
       x-rate-limit-limit: ['900']
-      x-rate-limit-remaining: ['898']
-      x-rate-limit-reset: ['1486908769']
-      x-response-time: ['78']
-      x-transaction: [00063eba00d9092d]
+      x-rate-limit-remaining: ['896']
+      x-rate-limit-reset: ['1486928254']
+      x-response-time: ['71']
+      x-transaction: [00c1500900dc0851]
       x-twitter-response-tags: [BouncerCompliant]
       x-xss-protection: [1; mode=block]
     status: {code: 200, message: OK}
