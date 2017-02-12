@@ -20,6 +20,13 @@ def create_post_response():
 
 
 @pytest.fixture
+def create_posts_response():
+    with vcr.use_cassette('tests/fixtures/posts_test.yaml'):
+        post = api.Twitter().get_posts(461594173)
+    return post
+
+
+@pytest.fixture
 def create_reaction_response():
     with vcr.use_cassette('tests/fixtures/post_test.yaml'):
         post = api.Twitter().get_reaction(830798975171174404)
@@ -35,14 +42,14 @@ def create_users_response():
 
 @pytest.fixture
 def create_following_response():
-    with vcr.use_cassette('tests/fixtures/test_following.yaml'):
+    with vcr.use_cassette('tests/fixtures/following_test.yaml'):
         following = api.Twitter().get_following('bstarling_')
     return following
 
 
 @pytest.fixture
 def create_followers_response():
-    with vcr.use_cassette('tests/fixtures/test_followers.yaml'):
+    with vcr.use_cassette('tests/fixtures/followers_test.yaml'):
         followers = api.Twitter().get_followers('bstarling_')
     return followers
 
@@ -81,7 +88,12 @@ def test_get_followers_base_case():
     assert len(followers) == 41
 
 
-def test_get_Followers_returns_list_of_tweepy_user():
+def test_get_followers_returns_list_of_tweepy_user():
     followers = create_followers_response()
     assert type(followers) == list
     assert type(followers[0]) == tweepy.models.User
+
+
+def test_get_posts_base_case():
+    posts = create_posts_response()
+    assert len(posts) == 216

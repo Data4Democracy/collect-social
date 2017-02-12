@@ -4,3 +4,4 @@ tweepy
 pytest==3.0.6
 coverage
 pytest-cov==2.4.0
+vcrpy==1.10.5
