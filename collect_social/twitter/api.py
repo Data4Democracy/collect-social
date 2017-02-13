@@ -1,6 +1,6 @@
-import datetime
 import tweepy
 from collect_social import config
+from collect_social.twitter import stream
 
 
 class Twitter(object):
@@ -10,6 +10,8 @@ class Twitter(object):
                  access_token=config.access_token, access_token_secret=config.access_token_secret):
 
         # read creds from config file for now
+        self._credentials = {'c_key': consumer_key, 'c_secret': consumer_secret,
+                             'a_token': access_token, 'a_token_secret': access_token_secret}
         self._auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         self._auth.set_access_token(access_token, access_token_secret)
         self._api = tweepy.API(self._auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
@@ -102,3 +104,6 @@ class Twitter(object):
                 'retweet_count': twitter_post.retweet_count,
                 'favorite_count': twitter_post.favorite_count
         }
+
+    def start_stream(self, topics):
+        stream.start_stream(topics=topics, creds=self._credentials)

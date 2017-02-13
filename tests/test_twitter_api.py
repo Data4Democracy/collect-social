@@ -54,6 +54,13 @@ def create_followers_response():
     return followers
 
 
+@pytest.fixture
+def create_stream():
+    with vcr.use_cassette('tests/fixtures/stream_football_test.yaml'):
+        stream = api.Twitter().start_stream(topics=['football'])
+    return stream
+
+
 def test_get_user_base_case():
     user = create_user_response()
     assert user.screen_name == 'bstarling_'
