@@ -17,12 +17,13 @@ class StreamListener(tweepy.StreamListener):
         self.counter += 1
         self.tweet_batch.append(status)
         print(self.counter)
-        # TODO send_to_eventadaor(status)
+
+        # TODO if eventendator >  send_to_eventadaor(status)
 
         if self.counter >= self.per_batch:
 
             # can we do this async?
-            process.process_content(self.tweet_batch)
+            process.process_batch(self.tweet_batch)
             self.tweet_batch = []
             self.batch_counter += 1
             self.counter = 0
