@@ -1,18 +1,36 @@
 import tweepy
+from collect_social.backend import process
+# from collect_social.backend import backend
 
 
 class StreamListener(tweepy.StreamListener):
-    def __init__(self):
+    def __init__(self, per_batch=10, batch_limit=3):
         super(StreamListener, self).__init__()
         self.counter = 0
-        self.limit = 10
+        self.per_batch = per_batch
+        self.batch_limit = batch_limit
+        self.tweet_batch = []
+        self.batch_counter = 0
+        # self.backend = backend.Setup()
 
     def on_status(self, status):
         self.counter += 1
-        if self.counter >= self.limit:
+        self.tweet_batch.append(status)
+        print(self.counter)
+        # TODO send_to_eventadaor(status)
+
+        if self.counter >= self.per_batch:
+
+            # can we do this async?
+            process.process_content(self.tweet_batch)
+            self.tweet_batch = []
+            self.batch_counter += 1
+            self.counter = 0
+
+        # Max batches reached
+        if self.batch_limit and self.batch_counter >= self.batch_limit:
+            print('batch limit {} hit'.format(self.batch_counter))
             return False
-        else:
-            print(status.text)
 
     def on_error(self, status_code):
         pass
