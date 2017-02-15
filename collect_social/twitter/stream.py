@@ -1,7 +1,6 @@
 import tweepy
 from collect_social.backend import process
 from collect_social.backend.eventador import EventadorClient
-from collect_social import config_example
 import asyncio
 import time
 # from collect_social.backend import backend
@@ -62,14 +61,18 @@ class CollectSocialTwitterListener:
         auth.set_access_token(self.config['access_token'], self.config['access_token_secret'])
         return tweepy.API(auth).auth
 
-    def start_stream(self, get_performance=False):
+    def start_stream(self, topics=False, stats=False):
         start = time.time()
 
+        if topics:
+            # override topics to track if topics param provided
+            track = topics
+        else:
+            # fallback to settings
+            track = self.twitter_terms
+
         stream = tweepy.Stream(auth=self.handle_api_auth(), listener=self.tweepy_listener)
-        stream.filter(track=self.twitter_terms)
+        stream.filter(track=track)
 
-        if get_performance:
+        if stats:
             print("Total Execution Time: %s seconds" % (time.time() - start))
-
-
-CollectSocialTwitterListener(config_example.config).start_stream(True)
