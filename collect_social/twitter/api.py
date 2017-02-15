@@ -102,5 +102,5 @@ class Twitter(object):
                 'favorite_count': twitter_post.favorite_count
         }
 
-    def start_stream(self):
-        stream.CollectSocialTwitterListener(self.config).start_stream(True)
+    def start_stream(self, topics=None, stats=False):
+        stream.CollectSocialTwitterListener(self.config).start_stream(topics=topics, stats=stats)
