@@ -22,7 +22,9 @@ class StreamListener(tweepy.StreamListener):
         self.tweet_batch.append(status)
 
         if self.counter >= self.per_batch:
-            self.process_tasks()
+            self.process_tasks() #comment out for sanity check.
+            self.increment_batch()
+            self.init_batch()
         if self.batch_limit and self.batch_counter >= self.batch_limit:         # Max batches reached
             return False
 
@@ -35,8 +37,7 @@ class StreamListener(tweepy.StreamListener):
         ]
 
         loop.run_until_complete(asyncio.gather(*tasks))
-        self.increment_batch()
-        self.init_batch()
+
 
     def increment_batch(self):
         self.batch_counter += 1
