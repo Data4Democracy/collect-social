@@ -1,21 +1,18 @@
 import tweepy
-from collect_social import config
+import config as cfg
 from collect_social.twitter import stream
 
 
 class Twitter(object):
     """This class represents an authenticated twitter connection"""
 
-    def __init__(self, consumer_key=config.consumer_key, consumer_secret=config.consumer_secret,
-                 access_token=config.access_token, access_token_secret=config.access_token_secret):
-
+    def __init__(self):
+        self.config = cfg.config
         # read creds from config file for now
-        self._credentials = {'c_key': consumer_key, 'c_secret': consumer_secret,
-                             'a_token': access_token, 'a_token_secret': access_token_secret}
-        self._auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        self._auth.set_access_token(access_token, access_token_secret)
-        self._api = tweepy.API(self._auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
+        self._auth = tweepy.OAuthHandler(self.config['consumer_key'], self.config['consumer_secret'])
+        self._auth.set_access_token(self.config['access_token'], self.config['access_token_secret'])
+        self._api = tweepy.API(self._auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     def get_post(self, post_id):
         """
@@ -105,5 +102,5 @@ class Twitter(object):
                 'favorite_count': twitter_post.favorite_count
         }
 
-    def start_stream(self, topics):
-        stream.start_stream(topics=topics, creds=self._credentials)
+    def start_stream(self):
+        stream.CollectSocialTwitterListener(self.config).start_stream(True)

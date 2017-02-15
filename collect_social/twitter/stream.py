@@ -1,7 +1,6 @@
 import tweepy
 from collect_social.backend import process
 from collect_social.backend.eventador import EventadorClient
-from collect_social import config_example
 import asyncio
 import time
 # from collect_social.backend import backend
@@ -70,6 +69,3 @@ class CollectSocialTwitterListener:
 
         if get_performance:
             print("Total Execution Time: %s seconds" % (time.time() - start))
-
-
-CollectSocialTwitterListener(config_example.config).start_stream(True)
