@@ -9,20 +9,21 @@ twitter_config = {
     'consumer_key': '',
     'consumer_secret': '',
 
-    'twitter_terms': twitter_terms
+    'twitter_terms': twitter_terms,
+    'batches': 3,
+    'per_batch': 10
 }
 
-#Eventador
+# Eventador
 ev_config = {
     'broker':'',
-    'topic': b'' # pykafka wants bytestrings here
+    'topic': b''  # pykafka wants bytestrings here
 }
 
-#not used for now
+# not used for now
 storage = {
-            #'s3': {'bucket': bucket, 'credentials': credentials, 'format': 'JSON'}
+            # 's3': {'bucket': bucket, 'credentials': credentials, 'format': 'JSON'}
             'file': os.path.join(os.getcwd(), 'output_example.json')
 }
-
 
 config = {**twitter_config, **ev_config, **storage}

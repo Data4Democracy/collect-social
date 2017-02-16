@@ -1,11 +1,10 @@
 import tweepy
-import config as cfg
+import config_example as cfg
 from collect_social.twitter import stream
 
 
 class Twitter(object):
     """This class represents an authenticated twitter connection"""
-
     def __init__(self):
         self.config = cfg.config
         # read creds from config file for now
@@ -45,7 +44,6 @@ class Twitter(object):
 
         return self._api.get_user(handle)
 
-
     def get_users(self, id_list):
         """
         Params: id[ ]
@@ -55,7 +53,6 @@ class Twitter(object):
         for user in id_list:
             users.append(self.get_user(user))
         return users
-
 
     def get_followers(self, user_id):
         """
@@ -103,4 +100,4 @@ class Twitter(object):
         }
 
     def start_stream(self, topics=None, stats=False):
-        stream.CollectSocialTwitterListener(self.config).start_stream(topics=topics, stats=stats)
+        stream.CollectSocialTwitterListener(self.config, self._auth).start_stream(topics=topics, stats=stats)
