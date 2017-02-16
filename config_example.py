@@ -23,7 +23,7 @@ ev_config = {
 # not used for now
 storage = {
             # 's3': {'bucket': bucket, 'credentials': credentials, 'format': 'JSON'}
-            'file': os.path.join(os.getcwd(), 'output_example.json')
+            # 'file': os.path.join(os.getcwd(), 'output_example.json')
 }
 
 config = {**twitter_config, **ev_config, **storage}
