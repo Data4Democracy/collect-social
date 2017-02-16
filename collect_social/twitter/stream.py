@@ -3,22 +3,21 @@ from collect_social.backend import process
 from collect_social.backend.eventador import EventadorClient
 import asyncio
 import time
-# from collect_social.backend import backend
 
 
 class StreamListener(tweepy.StreamListener):
-    def __init__(self, eventador, per_batch=10, batch_limit=3):
+    def __init__(self, eventador, per_batch, batch_limit):
         super(StreamListener, self).__init__()
         self.batch_counter = 0
         self.per_batch = per_batch
         self.batch_limit = batch_limit
         self.eventador = eventador
         self.init_batch()
-        # self.backend = backend.Setup()
 
     def on_status(self, status):
         self.counter += 1
         self.tweet_batch.append(status)
+        print(status._json)
 
         if self.counter >= self.per_batch:
             self.process_tasks()
@@ -50,28 +49,27 @@ class StreamListener(tweepy.StreamListener):
 
 
 class CollectSocialTwitterListener:
-    def __init__(self, config):
+    def __init__(self, config, auth):
         self.config = config
         self.twitter_terms = config.get('twitter_terms')
         self.eventador = EventadorClient(config)
-        self.tweepy_listener = StreamListener(self.eventador)
+        self.tweepy_listener = StreamListener(
+            self.eventador,
+            config.get('per_batch', 10),
+            config.get('batches', 3))
+        self.auth = auth
 
-    def handle_api_auth(self):
-        auth = tweepy.OAuthHandler(self.config['consumer_key'], self.config['consumer_secret'])
-        auth.set_access_token(self.config['access_token'], self.config['access_token_secret'])
-        return tweepy.API(auth).auth
-
-    def start_stream(self, topics=False, stats=False):
+    def start_stream(self, topics=None, stats=False):
         start = time.time()
 
-        if topics:
+        if topics is not None:
             # override topics to track if topics param provided
             track = topics
         else:
             # fallback to settings
             track = self.twitter_terms
 
-        stream = tweepy.Stream(auth=self.handle_api_auth(), listener=self.tweepy_listener)
+        stream = tweepy.Stream(auth=self.auth, listener=self.tweepy_listener)
         stream.filter(track=track)
 
         if stats:
