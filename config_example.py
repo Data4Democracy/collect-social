@@ -10,7 +10,7 @@ twitter_config = {
     'consumer_secret': '',
 
     'twitter_terms': twitter_terms,
-    'batches': 3,
+    'batches': 3,  # -1 will stream indefinitely
     'per_batch': 10
 }
 

@@ -17,12 +17,16 @@ class StreamListener(tweepy.StreamListener):
     def on_status(self, status):
         self.counter += 1
         self.tweet_batch.append(status)
-        print(status._json)
 
-        if self.counter >= self.per_batch:
-            self.process_tasks()
-        if self.batch_limit and self.batch_counter >= self.batch_limit:         # Max batches reached
-            return False
+        if self.batch_limit == -1:
+            if self.counter >= self.per_batch:
+                self.process_tasks()
+
+        else:
+            if self.counter >= self.per_batch:
+                self.process_tasks()
+            elif self.batch_limit and self.batch_counter >= self.batch_limit:         # Max batches reached
+                return False
 
     def process_tasks(self):
         loop = asyncio.get_event_loop()
@@ -70,6 +74,11 @@ class CollectSocialTwitterListener:
             track = self.twitter_terms
 
         stream = tweepy.Stream(auth=self.auth, listener=self.tweepy_listener)
+
+        # temporary until logging implemented
+        print('--Twitter Stream--\nBatch limit: {}\nTweets Per Batch: {}\nTracking Topics: {}'.format(
+                self.tweepy_listener.batch_limit, self.tweepy_listener.per_batch,
+                track))
         stream.filter(track=track)
 
         if stats:
