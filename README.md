@@ -25,7 +25,6 @@ Then install the package using `pip`. This will allow you import `collect_social
 
 ```bash
 cd collect-social
-pip install -r requirements.txt
 pip install .
 ```
 
