@@ -11,17 +11,47 @@
 * [@metame](https://datafordemocracy.slack.com/messages/@metame/)
 
 
+## Purpose:
+Collecting social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. Collect social sits on top of other python libraries such as facepy (facebook) and tweepy (twitter). Our purpose is to take care of low level details and provide a clean API for working across multiple platforms.
 
-Getting content from social media data for analysis can be kind of a nuisance. This project aims to make that collection process as simple as possible, by making some common-sense assumptions about what most researchers need, and how they like to work with their data. For example, tasks like grabbing all the posts and comments from a handful of Facebook pages, and dumping the results into a sqlite database.
+
+## Philosophy:
+Our goal is to make it as **easy as possible** for researchers to get up and running with new collections. Our focus is on ease of use over maximum features. At every decision point we should carefully consider how a new feature will impact simplicity. A user should be able to use collect-social without prior knowledge of underlying libraries and APIs. Based on our experience of underlying API we will attempt to make the best decision that should work in average case but if you are looking for maximum control over your collection process, consider using underlying libraries directly.
 
 
-## Setup
+## Roadmap:
+* Our current to-do can be found here [here](https://github.com/Data4Democracy/collect-social/projects/4)
+* Command line interface
+* [Eventador](https://github.com/Data4Democracy/assemble/tree/master/eventador) integration.
+* Refactor facebook API to match twitter.
+* Save data to sqlite.
+* Flat file exports (JSON).
+* Option to upload file output to designated s3 bucket.
 
-```bash
-git clone https://github.com/Data4Democracy/collect-social.git
-```
 
-Then install the package using `pip`. This will allow you import `collect_social` from any python script.
+#### First class platforms
+* Facebook
+* Twitter
+
+#### Platforms we will potentially support in future
+These are platforms we will consider supporting in the future. These will not be built out until we are happy with our implementation of facebook/twitter. If you are familiar with any of these platforms and would like to put together a proof of concept in a separate repository we welcome input.
+
+* Reddit
+* Disqus
+* voat.co
+* 4chan/8chan etc.
+
+## Getting Started
+If you are looking to get started contributing please see our contributor guide.
+TODO - write guide
+
+### Installation:
+Collect-social is built to run on python 3.6.
+
+`git clone https://github.com/Data4Democracy/collect-social.git`
+
+Then install as a package using `pip`. This will allow you import `collect_social` from any python script.
+
 
 ```bash
 cd collect-social
@@ -32,21 +62,9 @@ Or you can use the setuptools directly with
 python setup.py install
 ```
 
-### Testing
-
-To run tests only:
-```bash
-pytest
-```
-
-To run tests with coverage report use shell script:
-```bash
-./run_tests
-```
-
-Contributors should add tests to the `tests` directory.
-
 ## Usage
+
+TODO: Explain settings file
 
 ### Facebook
 
@@ -55,6 +73,7 @@ If you haven't already, make sure to create a [Facebook app](https://developers.
 Note that you'll only be able to retrieve content from public pages that allow API access.
 
 #### Retrieving posts
+**Caution** work in progress. This will change as part of our ongoing refactor. We do not suggest anyone use this for now.
 
 You can retrieve posts using Facebook page ids. Note that the page id isn't the same as page name in the URL. For example [Justin Beiber's page name is JustinBieber](https://www.facebook.com/JustinBieber), but the page id is `67253243887`. You can find a page's id by looking at the source HTML at doing a ctrl+f (find in page) for `pageid`. [Here's a longer explanation](http://hellboundbloggers.com/2010/07/find-facebook-profile-and-page-id-8516/).
 
@@ -80,6 +99,7 @@ sqlite3 database-file.sqlite "SELECT  message FROM post LIMIT 10"
 ```
 
 #### Retrieving comments
+**Caution** work in progress. This will change as part of our ongoing refactor. We do not suggest anyone use this for now.
 
 This will retrieve all the comments (including threaded replies) for a list of posts. You can optionally provide a `max_comments` value, which is helpful if you're grabbing comments from the Facebook page of a public figure, where posts often get tens of thousands of comments.
 
@@ -97,6 +117,7 @@ get_comments.run(app_id,app_secret,connection_string,post_ids,max_comments=5000)
 This will create `post`, `comment`, and `user` tables in the sqlite database created in/opened from the file passed in `connection_string`, assuming those tables don't already exist.
 
 #### Retrieving reactions
+**Caution** work in progress. This will change as part of our ongoing refactor. We do not suggest anyone use this for now.
 
 Reactions are "likes" and all the other happy/sad/angry/whatever responses that you can add to a Facebook post without actually typing a comment. The reaction `author_id` and `reaction_type` are saved to an `interaction` table in your sqlite database.
 
@@ -115,23 +136,6 @@ get_reactions.run(app_id,app_secret,connection_string,post_ids,max_comments=5000
 
 If you haven't already, make sure to create a [Twitter app](https://apps.twitter.com/) with your Twitter account. This will give you an access token, access token secret, consumer key, and consumer secret that will be required to query the Twitter API.
 
-#### Search Tweets
+#### API
 
-This will search tweets based on the query string specified in `topics` and store it in a `tweet` table in the sqlite database specified.
-
-```python
-from collect_social.twitter import search_tweets
-
-ACCESS_TOKEN = '<YOUR ACCESS TOKEN>'
-ACCESS_TOKEN_SECRET = '<YOUR ACCESS TOKEN SECRET>'
-CONSUMER_KEY = '<YOUR CONSUMER KEY>'
-CONSUMER_SECRET = 'YOUR CONSUMER SECRET>'
-connection_string = 'sqlite:////full/path/to/a/database-file.sqlite'
-topics = ['<hashtag or string to search for>']
-
-search_tweets.run(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET,connection_string,topics,count=100)
-```
-You can reference [`tweet_model.py`](collect_social/twitter/tweet_model.py) to see what fields are stored.
-Twitter topic streaming coming soon.
-
-More social media platforms coming soon. In the meantime, please [let me know](https://twitter.com/jonathonmorgan) if there's anything in particular you'd like to see.
+TODO: Document API
