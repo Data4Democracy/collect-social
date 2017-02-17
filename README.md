@@ -27,6 +27,10 @@ Then install the package using `pip`. This will allow you import `collect_social
 cd collect-social
 pip install .
 ```
+Or you can use the setuptools directly with
+```bash
+python setup.py install
+```
 
 ### Testing
 
