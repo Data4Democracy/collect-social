@@ -52,10 +52,14 @@ Collect-social is built to run on python 3.6.
 
 Then install as a package using `pip`. This will allow you import `collect_social` from any python script.
 
+
 ```bash
 cd collect-social
-pip install -r requirements.txt
 pip install .
+```
+Or you can use the setuptools directly with
+```bash
+python setup.py install
 ```
 
 ## Usage
