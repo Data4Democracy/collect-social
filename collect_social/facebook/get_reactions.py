@@ -1,6 +1,6 @@
 from __future__ import print_function
 from datetime import datetime
-from collect_social.facebook.utils import get_graph, setup_db, update_user
+from collect_social.facebook.utils import get_api, setup_db, update_user
 
 import time
 
@@ -55,7 +55,7 @@ def get_reactions(graph,db,post_id,i=0,after=None):
 
 def run(app_id,app_secret,connection_string,post_ids, i=0):
     db = setup_db(connection_string)
-    graph = get_graph(app_id,app_secret)
+    graph = get_api(app_id,app_secret)
 
     interactions = db['interaction']
 
