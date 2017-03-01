@@ -72,6 +72,10 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
                             profile_collected=0)
     users = [u for u in users]
 
+    if len(users) == 0:
+        print('No users without profiles')
+        return None
+
     ids_to_lookup = []
     for user in users:
         ids_to_lookup.append(user['user_id'])
@@ -89,5 +93,4 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
     print('Updating ' + str(len(ids_to_lookup)) + ' profiles')
     upsert_profiles(db,profiles)
 
-    sys.exit('Finished')
-
+    print('Finished getting profiles')

@@ -9,9 +9,9 @@ from collect_social.twitter.utils import get_api
 from datetime import datetime
 
 
-def get_tweets(api,screen_name,max_id=None):
+def get_tweets(api,user_id,max_id=None):
     kwargs = {
-        'screen_name':screen_name,
+        'user_id':user_id,
         'count':200
     }
 
@@ -20,7 +20,9 @@ def get_tweets(api,screen_name,max_id=None):
 
     try:
         tweets = api.GetUserTimeline(**kwargs)
-    except:
+    except Exception, e:
+        print(kwargs)
+        print(e)
         return []
     return tweets
 
@@ -141,11 +143,9 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
     if not user_id:
         users = user_table.find(user_table.table.columns.user_id, 
                                 tweets_collected=0)
-        user_ids = [u.user_id for u in users]
-        user_id = None
+        user_ids = [u['user_id'] for u in users]
     else:
         user_ids = []
-        user_id = args.user_id
 
     if user_id:
         remaining = 16

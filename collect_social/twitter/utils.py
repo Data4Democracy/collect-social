@@ -14,8 +14,8 @@ def setup_db(connection_string):
 
     tweets.create_index(['tweet_id'])
     medias.create_index(['tweet_id'])
-    mention_table.create_index(['user_id'])
-    mention_table.create_index(['mentioned_user_id'])
+    mentions.create_index(['user_id'])
+    mentions.create_index(['mentioned_user_id'])
     urls.create_index(['tweet_id'])
     hashtags.create_index(['tweet_id'])
     users.create_index(['user_id'])
@@ -25,8 +25,12 @@ def setup_db(connection_string):
     return db
 
 
-def insert_if_missing(db,user_ids=[]):
+def insert_if_missing(db,user_ids=[],is_seed=False):
     user_table = db['user']
+    if is_seed:
+        is_seed = 1
+    else:
+        is_seed = 0
 
     for _id in user_ids:
         user = user_table.find_one(user_id=_id)
@@ -34,11 +38,12 @@ def insert_if_missing(db,user_ids=[]):
         if not user:
             data = dict(user_id=_id,profile_collected=0,is_scored=0,
                     followers_collected=0,friends_collected=0,
-                    tweets_collected=0)
+                    tweets_collected=0,is_seed=is_seed)
             user_table.insert(data, ensure=True)
 
 
-def setup_seeds(db,screen_names=[],user_ids=[]):
+def setup_seeds(db, consumer_key, consumer_secret, access_key, 
+                access_secret,screen_names=[],user_ids=[]):
     kwargs = {
         'include_entities': False
     }
@@ -50,10 +55,11 @@ def setup_seeds(db,screen_names=[],user_ids=[]):
     else:
         return None
 
+    api = get_api(consumer_key, consumer_secret, access_key, access_secret)
     profiles = api.UsersLookup(**kwargs)
-    new_user_ids = [p['id'] for p in profiles]
+    new_user_ids = [p.id for p in profiles]
 
-    insert_if_missing(db, user_ids)
+    insert_if_missing(db, new_user_ids, is_seed=True)
 
 
 def get_api(consumer_key, consumer_secret, access_key, access_secret):

@@ -29,14 +29,19 @@ def create_connections(db,user_id,friend_ids=[]):
  
  
 def run(consumer_key, consumer_secret, access_key, access_secret, 
-        connection_string, threshold=5000):
+        connection_string, threshold=5000, seed_only=True):
  
     db = dataset.connect(connection_string)
     api = get_api(consumer_key, consumer_secret, access_key, access_secret)
     
+    if seed_only:
+        is_seed = 1
+    else:
+        is_seed = 0
+
     user_table = db['user']
     users = user_table.find(user_table.table.columns.friends_count < threshold,
-                            friends_collected=0)
+                            friends_collected=0, is_seed=is_seed)
     users = [u for u in users]
     all_users = len(users)
     remaining = all_users
