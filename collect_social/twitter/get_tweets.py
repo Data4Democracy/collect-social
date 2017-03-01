@@ -141,8 +141,7 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
     user_table = db['user']
 
     if not user_id:
-        users = user_table.find(user_table.table.columns.user_id, 
-                                tweets_collected=0)
+        users = user_table.find(tweets_collected=0)
         user_ids = [u['user_id'] for u in users]
     else:
         user_ids = []
