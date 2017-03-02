@@ -138,4 +138,41 @@ If you haven't already, make sure to create a [Twitter app](https://apps.twitter
 
 #### API
 
-TODO: Document API
+This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect the last 3,200 tweets (the limit allowed by Twitter's API) for each of those accounts. 
+
+```python
+from collect_social.twitter.utils import setup_db, setup_seeds
+from collect_social.twitter.get_profiles import run as run_profiles
+from collect_social.twitter.get_friends import run as run_friends
+from collect_social.twitter.get_tweets import run as run_tweets
+
+# These you generate on developers.twitter.com
+consumer_key = 'YOUR KEY'
+consumer_secret = 'YOUR SECRET'
+access_key = 'YOUR ACCESS KEY'
+access_secret = 'YOUR ACCESS SECRET'
+
+# Path to your sqlite file
+connection_string = 'sqlite:///db.sqlite'
+
+args = [consumer_key, consumer_secret, access_key, access_secret, connection_string]
+
+# Assuming your seed accounts are in a file called `seeds.txt`. Put each screen name
+# on its own line in the file
+seeds = [l.strip() for l in open('seeds.txt').readlines()]
+
+db = setup_db(connection_string)
+setup_seeds(db, consumer_key, consumer_secret, access_key, access_secret, screen_names=seeds)
+
+# get user profiles
+run_profiles(*args)
+
+# get everyone they follow
+run_friends(*args)
+
+# get profiles for newly added users
+run_profiles(*args)
+
+# get everyone's last 3200 tweets
+run_tweets(*args)
+```
