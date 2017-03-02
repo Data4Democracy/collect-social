@@ -176,3 +176,17 @@ run_profiles(*args)
 # get everyone's last 3200 tweets
 run_tweets(*args)
 ```
+
+#### Using the data
+
+You now have a sqlite database with `user`, `tweet`, `mention`, `url`, `hashtag`, and `connection` tables, that all can be pulled into a `pandas.DataFrame`.
+
+```
+import pandas as pd
+import sqlite3
+
+con = sqlite3.connect("db.sqlite")
+df_tweet = pd.read_sql_query("SELECT * from tweet", con)
+df_user = pd.read_sql_query("SELECT * from user", con)
+```
+
