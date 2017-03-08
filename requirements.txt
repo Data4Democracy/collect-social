@@ -1,3 +1,5 @@
 facepy
 dataset
-python-twitter
+-e git+https://github.com/gati/python-twitter.git#egg=pythontwitter
+selenium
+pandas
