@@ -138,7 +138,7 @@ If you haven't already, make sure to create a [Twitter app](https://apps.twitter
 
 #### API
 
-This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect the last 3,200 tweets (the limit allowed by Twitter's API) for each of those accounts. 
+This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect all tweets from 1/1/2016 to now for each of those accounts. 
 
 ```python
 from collect_social.twitter.utils import setup_db, setup_seeds
