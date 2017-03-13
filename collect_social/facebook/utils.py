@@ -34,7 +34,7 @@ def setup_db(connection_string):
     return db
 
 
-def get_graph(app_id,app_secret):
+def get_api(app_id,app_secret):
     auth_token = facepy.utils.get_application_access_token(app_id, app_secret, api_version='2.6')
     graph = facepy.GraphAPI(auth_token)
 
