@@ -7,22 +7,22 @@ from collect_social.twitter.utils import get_api, insert_if_missing
 from datetime import datetime
 
 
-def get_friend_ids(api,count=5000,screen_name=None,cursor=-1):
-    next,prev,follower_ids = api.GetFriendIDsPaged(screen_name=screen_name,
-                            cursor=cursor,
-                            count=count)
+def get_friend_ids(api, count=5000, screen_name=None, cursor=-1):
+    next, prev, follower_ids = api.GetFriendIDsPaged(screen_name=screen_name,
+                                                     cursor=cursor,
+                                                     count=count)
 
-    return next,prev,follower_ids
+    return next, prev, follower_ids
 
 
-def create_connections(db,user_id,friend_ids=[]):
+def create_connections(db, user_id, friend_ids=[]):
     connection_table = db['connection']
 
     for _id in friend_ids:
         connection = connection_table.find_one(friend_id=_id,
-                                                follower_id=user_id)
+                                               follower_id=user_id)
         if not connection:
-            data = dict(friend_id=_id,follower_id=user_id)
+            data = dict(friend_id=_id, follower_id=user_id)
             connection_table.insert(data, ensure=True)
 
 
@@ -47,16 +47,17 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
     for u in users:
         try:
             print('Getting friend ids for ' + u['screen_name'])
-            next,prev,friend_ids = get_friend_ids(api, screen_name=u['screen_name'])
+            next, prev, friend_ids = get_friend_ids(
+                api, screen_name=u['screen_name'])
 
             print('Adding ' + str(len(friend_ids)) + ' user ids to db')
-            insert_if_missing(db,user_ids=friend_ids)
+            insert_if_missing(db, user_ids=friend_ids)
 
             print('Creating relationships for ' + str(u['user_id']))
-            create_connections(db,u['user_id'],friend_ids=friend_ids)
+            create_connections(db, u['user_id'], friend_ids=friend_ids)
 
-            update_dict = dict(id=u['id'],friends_collected=1)
-            user_table.update(update_dict,['id'])
+            update_dict = dict(id=u['id'], friends_collected=1)
+            user_table.update(update_dict, ['id'])
 
             # Can only make 15 calls in a 15 minute window to this endpoint
             remaining -= 1

@@ -10,12 +10,14 @@ from selenium.common.exceptions import StaleElementReferenceException
 from collect_social.twitter.utils import get_api
 import datetime
 
+
 def chunker(seq, size):
     """
     Taken from:
     http://stackoverflow.com/questions/434287/what-is-the-most-pythonic-way-to-iterate-over-a-list-in-chunks
     """
     return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
+
 
 def increment_day(date, i):
     """Increment day object by i days.
@@ -33,6 +35,7 @@ def increment_day(date, i):
     {datetime-obj} next day.
     """
     return date + datetime.timedelta(days=i)
+
 
 def twitter_url(screen_name, no_rt, start, end):
     """Form url to access tweets via Twitter's search page.
@@ -58,9 +61,10 @@ def twitter_url(screen_name, no_rt, start, end):
         url3 = '%20until%3A' + end.strftime('%Y-%m-%d') + '%20&src=typd'
     else:
         url3 = '%20until%3A' + end.strftime('%Y-%m-%d') + \
-                '%20include%3Aretweets&src=typd'
+            '%20include%3Aretweets&src=typd'
 
     return url1 + url2 + url3
+
 
 def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
     """
@@ -96,7 +100,7 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
 
         try:
             found_tweets = \
-            driver.find_elements_by_css_selector('li.js-stream-item')
+                driver.find_elements_by_css_selector('li.js-stream-item')
             increment = 10
 
             # Scroll through the Twitter search page
@@ -116,14 +120,14 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
             for tweet in found_tweets:
                 try:
                     # get tweet id
-                        tweet_id = tweet.find_element_by_css_selector(
-                            '.time a.tweet-timestamp'
-                        ).get_attribute('href').split('/')[-1]
-                        all_ids.append(tweet_id)
-                        ids_total += 1
-                        # break if tweet_lim has been reached
-                        if ids_total == tweet_lim:
-                            return ids_total
+                    tweet_id = tweet.find_element_by_css_selector(
+                        '.time a.tweet-timestamp'
+                    ).get_attribute('href').split('/')[-1]
+                    all_ids.append(tweet_id)
+                    ids_total += 1
+                    # break if tweet_lim has been reached
+                    if ids_total == tweet_lim:
+                        return ids_total
 
                 except StaleElementReferenceException as e:
                     print('lost element reference', tweet)
@@ -138,7 +142,8 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
     print('{} tweets found total'.format(ids_total))
     return all_ids
 
-def upsert_tweets(db,tweets):
+
+def upsert_tweets(db, tweets):
     if not tweets:
         return None
 
@@ -161,15 +166,16 @@ def upsert_tweets(db,tweets):
             }
 
             if tweet.retweeted_status is not None and \
-                tweet.retweeted_status.user.screen_name == user_mention.screen_name:
+                    tweet.retweeted_status.user.screen_name == user_mention.screen_name:
                 um_data['mention_type'] = 'retweet'
-                um_data['mentioned_tweet_id'] =  tweet.retweeted_status.id
+                um_data['mentioned_tweet_id'] = tweet.retweeted_status.id
 
             if tweet.in_reply_to_screen_name == user_mention.screen_name:
                 um_data['mention_type'] = 'reply'
-                um_data['mentioned_tweet_id'] =  tweet.in_reply_to_status_id
+                um_data['mentioned_tweet_id'] = tweet.in_reply_to_status_id
 
-            mention_table.upsert(um_data, ['tweet_id','user_id','mentioned_user_id'])
+            mention_table.upsert(
+                um_data, ['tweet_id', 'user_id', 'mentioned_user_id'])
 
         if tweet.media:
             for media in tweet.media:
@@ -180,8 +186,7 @@ def upsert_tweets(db,tweets):
                     'media_type': media.type,
                     'url': media.media_url
                 }
-                media_table.upsert(m_data, ['tweet_id','user_id','url'])
-
+                media_table.upsert(m_data, ['tweet_id', 'user_id', 'url'])
 
         if tweet.hashtags:
             for hashtag in tweet.hashtags:
@@ -191,8 +196,7 @@ def upsert_tweets(db,tweets):
                     'tweet_id': tweet.id,
                     'text': hashtag.text,
                 }
-                hashtag_table.upsert(h_data, ['tweet_id','user_id','text'])
-
+                hashtag_table.upsert(h_data, ['tweet_id', 'user_id', 'text'])
 
         if tweet.urls:
             for url in tweet.urls:
@@ -202,8 +206,7 @@ def upsert_tweets(db,tweets):
                     'tweet_id': tweet.id,
                     'url': url.expanded_url,
                 }
-                url_table.upsert(u_data, ['tweet_id','user_id','url'])
-
+                url_table.upsert(u_data, ['tweet_id', 'user_id', 'url'])
 
         tweet_type = 'tweet'
         referenced_tweet_id = None
@@ -214,9 +217,8 @@ def upsert_tweets(db,tweets):
             tweet_type = 'reply'
             referenced_tweet_id = tweet.in_reply_to_status_id
 
-
         t_data = {
-            'tweet_id':tweet.id,
+            'tweet_id': tweet.id,
             'user_id': tweet.user.id,
             'user_sceen_name': tweet.user.screen_name,
             'tweet_type': tweet_type,
@@ -239,7 +241,7 @@ def upsert_tweets(db,tweets):
         ]
 
         for key in tweet_props:
-            t_data[key] = getattr(tweet,key)
+            t_data[key] = getattr(tweet, key)
 
         tweet_table.upsert(t_data, ['tweet_id'])
 
@@ -268,10 +270,10 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
 
         tweet_ids = get_all_user_tweets(user_id, start, end)
 
-        tweet_groups = chunker(tweet_ids,100)
+        tweet_groups = chunker(tweet_ids, 100)
 
         for group in tweet_groups:
             temptweets = api.StatusesLookup(group, include_entities=True)
-            upsert_tweets(db,temptweets)
+            upsert_tweets(db, temptweets)
 
         remaining -= 1
