@@ -138,7 +138,7 @@ If you haven't already, make sure to create a [Twitter app](https://apps.twitter
 
 #### API
 
-This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect all tweets from 1/1/2016 to now for each of those accounts. 
+This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect all tweets from 1/1/2016 to now for each of those accounts.
 
 ```python
 from collect_social.twitter.utils import setup_db, setup_seeds
@@ -176,6 +176,9 @@ run_profiles(*args)
 # get everyone's last 3200 tweets
 run_tweets(*args)
 ```
+**note:** if you have not used selenium before you will need the chromedriver binary install in addition to the pip python installation to use `run_tweets(*args)`
+
+Homebrew is the easiest way to install chromedriver binary on mac `brew install chromedriver`
 
 #### Using the data
 
@@ -189,4 +192,3 @@ con = sqlite3.connect("db.sqlite")
 df_tweet = pd.read_sql_query("SELECT * from tweet", con)
 df_user = pd.read_sql_query("SELECT * from user", con)
 ```
-

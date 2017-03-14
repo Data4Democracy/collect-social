@@ -1,13 +1,10 @@
 from __future__ import print_function
 
 import dataset
-import twitter
-import sys
 import time
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException 
 from selenium.common.exceptions import StaleElementReferenceException
 
 from collect_social.twitter.utils import get_api
@@ -22,7 +19,7 @@ def chunker(seq, size):
 
 def increment_day(date, i):
     """Increment day object by i days.
-    
+
     Taken from:
     https://github.com/alejandrox1/tweet_authorship/blob/master/Notebook_helperfunctions.py
 
@@ -30,7 +27,7 @@ def increment_day(date, i):
     -------
     date : datetime-obj
     i : int
-    
+
     Returns
     -------
     {datetime-obj} next day.
@@ -40,8 +37,8 @@ def increment_day(date, i):
 def twitter_url(screen_name, no_rt, start, end):
     """Form url to access tweets via Twitter's search page.
 
-    Taken from: 
-    https://github.com/alejandrox1/tweet_authorship/blob/master/Notebook_helperfunctions.py    
+    Taken from:
+    https://github.com/alejandrox1/tweet_authorship/blob/master/Notebook_helperfunctions.py
 
     Params
     -------
@@ -49,25 +46,25 @@ def twitter_url(screen_name, no_rt, start, end):
     no_rt : bool
     start : datetime-onj
     end : datetime-obj
-    
+
     Returns
     -------
     {string} search url for twitter
     """
     url1 = 'https://twitter.com/search?f=tweets&q=from%3A'
-    url2 = screen_name + '%20since%3A' + start.strftime('%Y-%m-%d') 
+    url2 = screen_name + '%20since%3A' + start.strftime('%Y-%m-%d')
     url3 = ''
     if no_rt:
         url3 = '%20until%3A' + end.strftime('%Y-%m-%d') + '%20&src=typd'
     else:
         url3 = '%20until%3A' + end.strftime('%Y-%m-%d') + \
                 '%20include%3Aretweets&src=typd'
-    
+
     return url1 + url2 + url3
 
 def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
     """
-    Adapted from: 
+    Adapted from:
     https://github.com/alejandrox1/tweet_authorship/blob/master/Notebook_helperfunctions.py
 
     Params
@@ -77,15 +74,15 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
     end : datetime-obj
     no_rt : bool
     tweet_lim : int {default none / -1}
-    
+
     returns
     -------
     {int} total number of tweet ids obtained
     """
     # Selenium params
     delay = 1  # time to wait on each page load before reading the page
-    driver = webdriver.Chrome() 
-    
+    driver = webdriver.Chrome()
+
     all_ids = []
     ids_total = 0
     for day in range((end - start).days + 1):
@@ -96,7 +93,7 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
 
         driver.get(url)
         time.sleep(delay)
-	
+
         try:
             found_tweets = \
             driver.find_elements_by_css_selector('li.js-stream-item')
@@ -117,25 +114,25 @@ def get_all_user_tweets(screen_name, start, end, tweet_lim=-1, no_rt=False):
 
             # Get the IDs for all Tweets
             for tweet in found_tweets:
-            	try:
-                	# get tweet id
+                try:
+                    # get tweet id
                         tweet_id = tweet.find_element_by_css_selector(
                             '.time a.tweet-timestamp'
                         ).get_attribute('href').split('/')[-1]
                         all_ids.append(tweet_id)
                         ids_total += 1
-                        # break if tweet_lim has been reached                           
-                        if ids_total == tweet_lim:                                   
+                        # break if tweet_lim has been reached
+                        if ids_total == tweet_lim:
                             return ids_total
 
                 except StaleElementReferenceException as e:
-                	print('lost element reference', tweet)
-        
+                    print('lost element reference', tweet)
+
         except NoSuchElementException:
             print('no tweets on this day')
 
         start = increment_day(start, 1)
-    
+
     # Close selenium driver
     driver.close()
     print('{} tweets found total'.format(ids_total))
@@ -181,11 +178,11 @@ def upsert_tweets(db,tweets):
                     'user_sceen_name': tweet.user.screen_name,
                     'tweet_id': tweet.id,
                     'media_type': media.type,
-                    'url': media.media_url 
+                    'url': media.media_url
                 }
                 media_table.upsert(m_data, ['tweet_id','user_id','url'])
 
-        
+
         if tweet.hashtags:
             for hashtag in tweet.hashtags:
                 h_data = {
@@ -215,7 +212,7 @@ def upsert_tweets(db,tweets):
             referenced_tweet_id = tweet.retweeted_status.id
         elif tweet.in_reply_to_status_id is not None:
             tweet_type = 'reply'
-            referenced_tweet_id = tweet.in_reply_to_status_id 
+            referenced_tweet_id = tweet.in_reply_to_status_id
 
 
         t_data = {
@@ -244,10 +241,10 @@ def upsert_tweets(db,tweets):
         for key in tweet_props:
             t_data[key] = getattr(tweet,key)
 
-        tweet_table.upsert(t_data, ['tweet_id'])      
+        tweet_table.upsert(t_data, ['tweet_id'])
 
 
-def run(consumer_key, consumer_secret, access_key, access_secret, 
+def run(consumer_key, consumer_secret, access_key, access_secret,
         connection_string, user_id=None, all_tweets=True):
 
     db = dataset.connect(connection_string)
@@ -262,19 +259,19 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
 
     remaining = len(user_ids)
     for user_id in user_ids:
-	print(str(remaining) + ' users to go')
-	print(user_id)
+        print(str(remaining) + ' users to go')
+        print(user_id)
 
         if all_tweets:
-            start = datetime.datetime(2016, 1, 1)  
-	    end = datetime.datetime.today()
-	    
-	    tweet_ids = get_all_user_tweets(user_id, start, end)
-  	    
-	    tweet_groups = chunker(tweet_ids,100)
+            start = datetime.datetime(2016, 1, 1)
+        end = datetime.datetime.today()
 
-    	    for group in tweet_groups:
-        	temptweets = api.StatusesLookup(group, include_entities=True)
-        	upsert_tweets(db,temptweets)
+        tweet_ids = get_all_user_tweets(user_id, start, end)
+
+        tweet_groups = chunker(tweet_ids,100)
+
+        for group in tweet_groups:
+            temptweets = api.StatusesLookup(group, include_entities=True)
+            upsert_tweets(db,temptweets)
 
         remaining -= 1

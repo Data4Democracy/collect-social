@@ -1,8 +1,6 @@
 from __future__ import print_function
 
 import dataset
-import twitter
-import sys
 import time
 
 from collect_social.twitter.utils import get_api
@@ -25,48 +23,48 @@ def upsert_profiles(db,profiles):
             }
 
         profile_props = [
-                    'contributors_enabled', 
-                    'created_at', 
-                    'default_profile', 
-                    'default_profile_image', 
-                    'description', 
-                    'favourites_count', 
-                    'followers_count', 
-                    'friends_count', 
-                    'geo_enabled', 
-                    'lang', 
-                    'listed_count', 
-                    'location', 
-                    'name', 
-                    'profile_background_color', 
-                    'profile_background_image_url', 
-                    'profile_background_tile', 
-                    'profile_banner_url', 
-                    'profile_image_url', 
-                    'profile_link_color', 
-                    'profile_sidebar_fill_color', 
-                    'profile_text_color', 
-                    'protected', 
-                    'screen_name', 
-                    'statuses_count', 
-                    'time_zone', 
-                    'url', 
-                    'utc_offset', 
+                    'contributors_enabled',
+                    'created_at',
+                    'default_profile',
+                    'default_profile_image',
+                    'description',
+                    'favourites_count',
+                    'followers_count',
+                    'friends_count',
+                    'geo_enabled',
+                    'lang',
+                    'listed_count',
+                    'location',
+                    'name',
+                    'profile_background_color',
+                    'profile_background_image_url',
+                    'profile_background_tile',
+                    'profile_banner_url',
+                    'profile_image_url',
+                    'profile_link_color',
+                    'profile_sidebar_fill_color',
+                    'profile_text_color',
+                    'protected',
+                    'screen_name',
+                    'statuses_count',
+                    'time_zone',
+                    'url',
+                    'utc_offset',
                     'verified'
                 ]
 
         for key in profile_props:
             data[key] = getattr(profile,key)
 
-        user_table.upsert(data, ['user_id'])    
+        user_table.upsert(data, ['user_id'])
 
 
-def run(consumer_key, consumer_secret, access_key, access_secret, 
+def run(consumer_key, consumer_secret, access_key, access_secret,
         connection_string):
 
     db = dataset.connect(connection_string)
     api = get_api(consumer_key, consumer_secret, access_key, access_secret)
-    
+
     user_table = db['user']
     users = user_table.find(user_table.table.columns.user_id != 0,
                             profile_collected=0)
