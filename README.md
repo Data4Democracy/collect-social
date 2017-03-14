@@ -176,9 +176,6 @@ run_profiles(*args)
 # get everyone's last 3200 tweets
 run_tweets(*args)
 ```
-**note:** if you have not used selenium before you will need the chromedriver binary install in addition to the pip python installation to use `run_tweets(*args)`
-
-Homebrew is the easiest way to install chromedriver binary on mac `brew install chromedriver`
 
 #### Using the data
 
