@@ -1,6 +1,7 @@
 import twitter
 import dataset
 
+
 def setup_db(connection_string):
     db = dataset.connect(connection_string)
 
@@ -25,7 +26,7 @@ def setup_db(connection_string):
     return db
 
 
-def insert_if_missing(db,user_ids=[],is_seed=False):
+def insert_if_missing(db, user_ids=[], is_seed=False):
     user_table = db['user']
     if is_seed:
         is_seed = 1
@@ -34,16 +35,16 @@ def insert_if_missing(db,user_ids=[],is_seed=False):
 
     for _id in user_ids:
         user = user_table.find_one(user_id=_id)
-        
+
         if not user:
-            data = dict(user_id=_id,profile_collected=0,is_scored=0,
-                    followers_collected=0,friends_collected=0,
-                    tweets_collected=0,is_seed=is_seed)
+            data = dict(user_id=_id, profile_collected=0, is_scored=0,
+                        followers_collected=0, friends_collected=0,
+                        tweets_collected=0, is_seed=is_seed)
             user_table.insert(data, ensure=True)
 
 
-def setup_seeds(db, consumer_key, consumer_secret, access_key, 
-                access_secret,screen_names=[],user_ids=[]):
+def setup_seeds(db, consumer_key, consumer_secret, access_key,
+                access_secret, screen_names=[], user_ids=[]):
     kwargs = {
         'include_entities': False
     }
@@ -67,5 +68,5 @@ def get_api(consumer_key, consumer_secret, access_key, access_secret):
                       consumer_secret=consumer_secret,
                       access_token_key=access_key,
                       access_token_secret=access_secret,
-		      sleep_on_rate_limit=True)
+                      sleep_on_rate_limit=True)
     return api
