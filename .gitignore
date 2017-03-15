@@ -94,3 +94,6 @@ ENV/
 
 #PyCharm
 .idea
+
+test.py
+tests/fixtures/

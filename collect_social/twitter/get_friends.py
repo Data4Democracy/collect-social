@@ -26,11 +26,11 @@ def create_connections(db, user_id, friend_ids=[]):
             connection_table.insert(data, ensure=True)
 
 
-def run(consumer_key, consumer_secret, access_key, access_secret,
-        connection_string, threshold=5000, seed_only=True):
+def run(auth, connection_string, threshold=5000, seed_only=True):
+    print(auth)
 
     db = dataset.connect(connection_string)
-    api = get_api(consumer_key, consumer_secret, access_key, access_secret)
+    api = get_api(**auth)
 
     if seed_only:
         is_seed = 1
@@ -64,6 +64,6 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
             time_left = remaining / 60.0
             print(str(time_left) + ' hours to go')
             print('Sleeping for 1 minute, timestamp: ' + str(datetime.now()))
-            time.sleep(60)
+            # time.sleep(60)
         except:
             continue

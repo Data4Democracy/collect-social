@@ -1,15 +1,15 @@
 import pytest
 from collect_social.facebook import utils
 
-@pytest.fixture
-def tmp_db_str(tmpdir):
-    ''' Creates a temporary database connection string.'''
-    return 'sqlite:///{}'.format(tmpdir.join('test.sqlite').strpath)
+# @pytest.fixture
+# def tmp_db_str(tmpdir):
+#     ''' Creates a temporary database connection string.'''
+#     return 'sqlite:///{}'.format(tmpdir.join('test.sqlite').strpath)
 
 @pytest.fixture
-def db(tmp_db_str):
-    ''' Creates a temporary database.'''
-    return utils.setup_db(tmp_db_str)
+def db():
+    """Creates a temporary database in memory"""
+    return utils.setup_db('sqlite://')
 
 def test_setup_db_tables(db):
     for table in ['page', 'user', 'post', 'comment', 'interaction']:
@@ -25,5 +25,3 @@ def test_update_user_no_duplicates(db):
     utils.update_user(db, user_data)
     utils.update_user(db, user_data)
     assert db['user'].count() == 1
-
-

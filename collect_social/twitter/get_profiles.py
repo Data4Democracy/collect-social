@@ -59,11 +59,10 @@ def upsert_profiles(db, profiles):
         user_table.upsert(data, ['user_id'])
 
 
-def run(consumer_key, consumer_secret, access_key, access_secret,
-        connection_string):
+def run(auth, connection_string):
 
     db = dataset.connect(connection_string)
-    api = get_api(consumer_key, consumer_secret, access_key, access_secret)
+    api = get_api(**auth)
 
     user_table = db['user']
     users = user_table.find(user_table.table.columns.user_id != 0,
@@ -84,7 +83,7 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
             upsert_profiles(db, profiles)
             ids_to_lookup = []
             print('Sleeping, timestamp: ' + str(datetime.now()))
-            time.sleep(5)
+            # time.sleep(5)
 
     print('Getting profiles')
     profiles = get_profiles(api, user_ids=ids_to_lookup)

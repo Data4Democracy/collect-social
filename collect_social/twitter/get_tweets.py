@@ -128,11 +128,10 @@ def upsert_tweets(db, tweets):
         tweet_table.upsert(t_data, ['tweet_id'])
 
 
-def run(consumer_key, consumer_secret, access_key, access_secret,
-        connection_string, user_id=None, all_tweets=True):
+def run(auth, connection_string, user_id=None, all_tweets=True):
 
     db = dataset.connect(connection_string)
-    api = get_api(consumer_key, consumer_secret, access_key, access_secret)
+    api = get_api(**auth)
     user_table = db['user']
 
     if not user_id:
@@ -155,7 +154,8 @@ def run(consumer_key, consumer_secret, access_key, access_secret,
                 user_table.update(update_dict, ['user_id'])
 
             if len(tweets) < 200:
-                sys.exit('Finished')
+                print('Finished')
+                break
 
             remaining -= 1
             print(str(remaining) + ' requests to go')
