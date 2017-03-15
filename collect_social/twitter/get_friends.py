@@ -27,7 +27,6 @@ def create_connections(db, user_id, friend_ids=[]):
 
 
 def run(auth, connection_string, threshold=5000, seed_only=True):
-    print(auth)
 
     db = dataset.connect(connection_string)
     api = get_api(**auth)

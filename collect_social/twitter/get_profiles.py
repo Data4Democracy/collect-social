@@ -1,10 +1,9 @@
 from __future__ import print_function
 
 import dataset
-import time
+from datetime import datetime
 
 from collect_social.twitter.utils import get_api
-from datetime import datetime
 
 
 def get_profiles(api, user_ids=None):
@@ -59,30 +58,49 @@ def upsert_profiles(db, profiles):
         user_table.upsert(data, ['user_id'])
 
 
+def collect_new_profiles(db):
+    user_table = db['user']
+
+
+    users = user_table.find(user_table.table.columns.user_id !=0,
+                            profile_collected=0)
+    users = [u for u in users]
+    return users
+
+
 def run(auth, connection_string):
+    """
+    run profile collection
+
+    :param auth: dict auth tokens
+    :param connection_string: str db connection string sqlite:///path/to/db.sqlite
+    :return: None
+    """
 
     db = dataset.connect(connection_string)
     api = get_api(**auth)
 
-    user_table = db['user']
-    users = user_table.find(user_table.table.columns.user_id != 0,
-                            profile_collected=0)
-    users = [u for u in users]
+    new_users = collect_new_profiles(db)
 
-    if len(users) == 0:
-        print('No users without profiles')
+    if not new_users:
+        print("No new profiles found")
         return None
 
     ids_to_lookup = []
-    for user in users:
+    ids_remain = len(new_users)
+    for user in new_users:
         ids_to_lookup.append(user['user_id'])
-        if len(ids_to_lookup) == 100:
+        if len(ids_to_lookup) >= 100:
             print('Getting profiles')
             profiles = get_profiles(api, user_ids=ids_to_lookup)
+
             print('Updating 100 profiles')
             upsert_profiles(db, profiles)
             ids_to_lookup = []
-            print('Sleeping, timestamp: ' + str(datetime.now()))
+            ids_remain -= 100
+
+            print('Users remaining {}'.format(ids_remain))
+            print('Sleeping, timestamp: {}'.format(datetime.now()))
             # time.sleep(5)
 
     print('Getting profiles')

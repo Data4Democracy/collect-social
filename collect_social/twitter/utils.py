@@ -3,6 +3,13 @@ import dataset
 
 
 def setup_db(connection_string):
+    """
+    create required tables & indexes
+
+    :param connection_string: str ex: sqlite://path/to/db.sqlite
+    :return: sqlite dataset connection
+    """
+
     db = dataset.connect(connection_string)
 
     connections = db['connection']
@@ -28,6 +35,8 @@ def setup_db(connection_string):
 
 def create_auth(consumer_key, consumer_secret, access_key, access_secret):
     """
+    creates a dictionary of auth tokens
+
     :param consumer_key: str twitter consumer key
     :param consumer_secret: str twitter consumer secret
     :param access_key: str twitter api access key
