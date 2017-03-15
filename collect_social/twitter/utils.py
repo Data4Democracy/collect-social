@@ -33,23 +33,6 @@ def setup_db(connection_string):
     return db
 
 
-def create_auth(consumer_key, consumer_secret, access_key, access_secret):
-    """
-    creates a dictionary of auth tokens
-
-    :param consumer_key: str twitter consumer key
-    :param consumer_secret: str twitter consumer secret
-    :param access_key: str twitter api access key
-    :param access_secret: str twitter api access secret
-    :return: dict containing api authorization
-    """
-    return {
-        'consumer_key': consumer_key,
-        'consumer_secret': consumer_secret,
-        'access_key': access_key,
-        'access_secret': access_secret
-    }
-
 def insert_if_missing(db, user_ids=[], is_seed=False):
     user_table = db['user']
     if is_seed:
@@ -67,8 +50,7 @@ def insert_if_missing(db, user_ids=[], is_seed=False):
             user_table.insert(data, ensure=True)
 
 
-def setup_seeds(db, consumer_key, consumer_secret, access_key,
-                access_secret, screen_names=[], user_ids=[]):
+def setup_seeds(db, api, screen_names=[], user_ids=[]):
     kwargs = {
         'include_entities': False
     }
@@ -80,7 +62,6 @@ def setup_seeds(db, consumer_key, consumer_secret, access_key,
     else:
         return None
 
-    api = get_api(consumer_key, consumer_secret, access_key, access_secret)
     profiles = api.UsersLookup(**kwargs)
     new_user_ids = [p.id for p in profiles]
 

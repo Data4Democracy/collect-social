@@ -61,24 +61,18 @@ def upsert_profiles(db, profiles):
 def collect_new_profiles(db):
     user_table = db['user']
 
-
-    users = user_table.find(user_table.table.columns.user_id !=0,
+    users = user_table.find(user_table.table.columns.user_id != 0,
                             profile_collected=0)
     users = [u for u in users]
     return users
 
 
-def run(auth, connection_string):
+def run(api, connection_string):
     """
-    run profile collection
-
-    :param auth: dict auth tokens
-    :param connection_string: str db connection string sqlite:///path/to/db.sqlite
-    :return: None
+    Collect profiles
     """
 
     db = dataset.connect(connection_string)
-    api = get_api(**auth)
 
     new_users = collect_new_profiles(db)
 

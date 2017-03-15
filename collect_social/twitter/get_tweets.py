@@ -1,10 +1,7 @@
 from __future__ import print_function
 
 import dataset
-import sys
 import time
-
-from collect_social.twitter.utils import get_api
 
 
 def get_tweets(api, user_id, max_id=None):
@@ -128,10 +125,21 @@ def upsert_tweets(db, tweets):
         tweet_table.upsert(t_data, ['tweet_id'])
 
 
-def run(auth, connection_string, user_id=None, all_tweets=True):
+def set_tweets_collected(db, user_id):
+    user_table = db['user']
+
+    update_dict = dict(user_id=user_id, tweets_collected=1)
+    result = user_table.update(update_dict, ['user_id'])
+    if result:
+        print('User {} marked as complete'.format(user_id))
+    else:
+        print("Could not update {}".format(user_id))
+    return result
+
+
+def run(api, connection_string, user_id=None, all_tweets=True):
 
     db = dataset.connect(connection_string)
-    api = get_api(**auth)
     user_table = db['user']
 
     if not user_id:
@@ -184,9 +192,7 @@ def run(auth, connection_string, user_id=None, all_tweets=True):
 
                 print('Got ' + str(i) + ' iteration of tweets for ' + str(user_id))
                 time.sleep(1)
-
-            update_dict = dict(screen_name=user_id, tweets_collected=1)
-            user_table.update(update_dict, ['user_id'])
+            set_tweets_collected(db, user_id)
             finished = False
         else:
             tweets = get_tweets(api, user_id)
