@@ -22,107 +22,135 @@ def get_tweets(api, user_id, max_id=None):
     return tweets
 
 
+def map_user_mention(db, tweet):
+    for user_mention in tweet.user_mentions:
+        mention_table = db['mention']
+
+        um_data = {
+            'user_id': tweet.user.id,
+            'user_sceen_name': tweet.user.screen_name,
+            'tweet_id': tweet.id,
+            'mentioned_user_id': user_mention.id,
+            'mentioned_user_screen_name': user_mention.screen_name,
+            'mentioned_tweet_id': None,
+            'mention_type': 'mention'
+        }
+
+        if tweet.retweeted_status is not None and \
+                        tweet.retweeted_status.user.screen_name == user_mention.screen_name:
+            um_data['mention_type'] = 'retweet'
+            um_data['mentioned_tweet_id'] = tweet.retweeted_status.id
+
+        if tweet.in_reply_to_screen_name == user_mention.screen_name:
+            um_data['mention_type'] = 'reply'
+            um_data['mentioned_tweet_id'] = tweet.in_reply_to_status_id
+
+        mention_table.upsert(
+            um_data, ['tweet_id', 'user_id', 'mentioned_user_id'])
+
+
+def map_media(db, tweet):
+    media_table = db['media']
+
+    for media in tweet.media:
+        m_data = {
+            'user_id': tweet.user.id,
+            'user_sceen_name': tweet.user.screen_name,
+            'tweet_id': tweet.id,
+            'media_type': media.type,
+            'url': media.media_url
+        }
+        media_table.upsert(m_data, ['tweet_id', 'user_id', 'url'])
+
+
+def map_hashtag(db, tweet):
+    hashtag_table = db['hashtag']
+
+    for hashtag in tweet.hashtags:
+        h_data = {
+            'user_id': tweet.user.id,
+            'user_sceen_name': tweet.user.screen_name,
+            'tweet_id': tweet.id,
+            'text': hashtag.text,
+        }
+        hashtag_table.upsert(h_data, ['tweet_id', 'user_id', 'text'])
+
+
+def map_url(db, tweet):
+    url_table = db['url']
+
+    for url in tweet.urls:
+        u_data = {
+            'user_id': tweet.user.id,
+            'user_sceen_name': tweet.user.screen_name,
+            'tweet_id': tweet.id,
+            'url': url.expanded_url,
+        }
+        url_table.upsert(u_data, ['tweet_id', 'user_id', 'url'])
+
+
+def process_tweet(db, tweet):
+    # TODO breakup further
+
+    tweet_table = db['tweet']
+    tweet_type = 'tweet'
+    referenced_tweet_id = None
+    if tweet.retweeted_status is not None:
+        tweet_type = 'retweet'
+        referenced_tweet_id = tweet.retweeted_status.id
+    elif tweet.in_reply_to_status_id is not None:
+        tweet_type = 'reply'
+        referenced_tweet_id = tweet.in_reply_to_status_id
+
+    t_data = {
+        'tweet_id': tweet.id,
+        'user_id': tweet.user.id,
+        'user_sceen_name': tweet.user.screen_name,
+        'tweet_type': tweet_type,
+        'referenced_tweet_id': referenced_tweet_id
+    }
+
+    if tweet.geo is not None and 'coordinates' in tweet.geo:
+        t_data['latitude'] = tweet.geo['coordinates'][0]
+        t_data['longitude'] = tweet.geo['coordinates'][1]
+
+    tweet_props = [
+        'created_at',
+        'favorite_count',
+        'favorited',
+        'lang',
+        'retweet_count',
+        'retweeted',
+        'source',
+        'text'
+    ]
+
+    for key in tweet_props:
+        t_data[key] = getattr(tweet, key)
+
+    tweet_table.upsert(t_data, ['tweet_id'])
+
+
+def map_tweet_attributes(db, tweet):
+    map_user_mention(db, tweet)
+
+    if tweet.media:
+        map_media(db, tweet)
+
+    if tweet.hashtags:
+        map_hashtag(db, tweet)
+
+    if tweet.urls:
+        map_url(db, tweet)
+
+
 def upsert_tweets(db, tweets):
     if not tweets:
         return None
 
-    tweet_table = db['tweet']
-    media_table = db['media']
-    mention_table = db['mention']
-    url_table = db['url']
-    hashtag_table = db['hashtag']
-
     for tweet in tweets:
-        for user_mention in tweet.user_mentions:
-            um_data = {
-                'user_id': tweet.user.id,
-                'user_sceen_name': tweet.user.screen_name,
-                'tweet_id': tweet.id,
-                'mentioned_user_id': user_mention.id,
-                'mentioned_userr_screen_name': user_mention.screen_name,
-                'mentioned_tweet_id': None,
-                'mention_type': 'mention'
-            }
-
-            if tweet.retweeted_status is not None and \
-                    tweet.retweeted_status.user.screen_name == user_mention.screen_name:
-                um_data['mention_type'] = 'retweet'
-                um_data['mentioned_tweet_id'] = tweet.retweeted_status.id
-
-            if tweet.in_reply_to_screen_name == user_mention.screen_name:
-                um_data['mention_type'] = 'reply'
-                um_data['mentioned_tweet_id'] = tweet.in_reply_to_status_id
-
-            mention_table.upsert(
-                um_data, ['tweet_id', 'user_id', 'mentioned_user_id'])
-
-        if tweet.media:
-            for media in tweet.media:
-                m_data = {
-                    'user_id': tweet.user.id,
-                    'user_sceen_name': tweet.user.screen_name,
-                    'tweet_id': tweet.id,
-                    'media_type': media.type,
-                    'url': media.media_url
-                }
-                media_table.upsert(m_data, ['tweet_id', 'user_id', 'url'])
-
-        if tweet.hashtags:
-            for hashtag in tweet.hashtags:
-                h_data = {
-                    'user_id': tweet.user.id,
-                    'user_sceen_name': tweet.user.screen_name,
-                    'tweet_id': tweet.id,
-                    'text': hashtag.text,
-                }
-                hashtag_table.upsert(h_data, ['tweet_id', 'user_id', 'text'])
-
-        if tweet.urls:
-            for url in tweet.urls:
-                u_data = {
-                    'user_id': tweet.user.id,
-                    'user_sceen_name': tweet.user.screen_name,
-                    'tweet_id': tweet.id,
-                    'url': url.expanded_url,
-                }
-                url_table.upsert(u_data, ['tweet_id', 'user_id', 'url'])
-
-        tweet_type = 'tweet'
-        referenced_tweet_id = None
-        if tweet.retweeted_status is not None:
-            tweet_type = 'retweet'
-            referenced_tweet_id = tweet.retweeted_status.id
-        elif tweet.in_reply_to_status_id is not None:
-            tweet_type = 'reply'
-            referenced_tweet_id = tweet.in_reply_to_status_id
-
-        t_data = {
-            'tweet_id': tweet.id,
-            'user_id': tweet.user.id,
-            'user_sceen_name': tweet.user.screen_name,
-            'tweet_type': tweet_type,
-            'referenced_tweet_id': referenced_tweet_id
-        }
-
-        if tweet.geo is not None and 'coordinates' in tweet.geo:
-            t_data['latitude'] = tweet.geo['coordinates'][0]
-            t_data['longitude'] = tweet.geo['coordinates'][1]
-
-        tweet_props = [
-            'created_at',
-            'favorite_count',
-            'favorited',
-            'lang',
-            'retweet_count',
-            'retweeted',
-            'source',
-            'text'
-        ]
-
-        for key in tweet_props:
-            t_data[key] = getattr(tweet, key)
-
-        tweet_table.upsert(t_data, ['tweet_id'])
+        map_tweet_attributes(db, tweet)
+        process_tweet(db, tweet)
 
 
 def set_tweets_collected(db, user_id):

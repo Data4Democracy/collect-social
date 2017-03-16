@@ -95,5 +95,7 @@ ENV/
 #PyCharm
 .idea
 
+# WIP test files
 test.py
-tests/fixtures/
+test2.py
+*.sqlite
