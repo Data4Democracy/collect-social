@@ -65,6 +65,12 @@ def tweet_with_mention(tweets):
         if tweet.id == 840186107186802688:
             return tweet
 
+
+def test_get_tweets_authentication_error():
+    tweet_list = get_tweets.get_tweets(None, 461594173)
+    assert tweet_list == []
+
+
 def test_setup_db_tables(db):
     for table in ['user', 'tweet', 'media', 'mention', 'url', 'hashtag']:
         assert table in db
@@ -96,15 +102,37 @@ def test_get_api():
     assert test_api._consumer_key == 'key'
 
 
-def test_set_tweets_gathered(db):
+def test_update_user_set_collected(db):
     db['user'].insert(dict(user_id=5, tweets_collected=0))
-    result = get_tweets.set_tweets_collected(db, user_id=5)
+    result = get_tweets.update_user(db, user_id=5)
     assert result == 1
+    assert db['user'].find_one(user_id=5)['tweets_collected'] == 1
 
 
-def test_set_tweets_gathered_not_found(db):
-    result = get_tweets.set_tweets_collected(db, user_id=113)
+def test_update_user_set_collected_not_found(db):
+    result = get_tweets.update_user(db, user_id=113)
     assert result == 0
+    assert db['user'].find_one(user_id=113) is None
+
+
+def test_update_user_set_suspended_and_collected(db):
+    db['user'].insert(dict(user_id=10, tweets_collected=0, is_suspended=0))
+    result = get_tweets.update_user(db, user_id=10, suspended=True)
+    user = db['user'].find_one(user_id=10)
+
+    assert result == 1
+    assert user['is_suspended'] == 1
+    assert user['tweets_collected'] == 1
+
+
+def test_update_user_set_suspended_and_not_collected(db):
+    db['user'].insert(dict(user_id=11, tweets_collected=0, is_suspended=0))
+    result = get_tweets.update_user(db, user_id=11, collected=False, suspended=True)
+    user = db['user'].find_one(user_id=11)
+
+    assert result == 1
+    assert user['is_suspended'] == 1
+    assert user['tweets_collected'] == 0
 
 
 def test_upsert_tweets(db, tweets):
@@ -117,7 +145,7 @@ def test_map_hashtag(db, tweet_with_hashtag):
     record = db['hashtag'].find_one(id=1)
 
     assert db['hashtag'].count() == 2
-    for field  in ['user_id', 'user_sceen_name', 'tweet_id', 'text']:
+    for field  in ['user_id', 'user_screen_name', 'tweet_id', 'text']:
         assert field in record.keys()
 
 

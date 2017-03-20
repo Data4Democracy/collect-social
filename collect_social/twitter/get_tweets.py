@@ -28,7 +28,7 @@ def map_user_mention(db, tweet):
 
         um_data = {
             'user_id': tweet.user.id,
-            'user_sceen_name': tweet.user.screen_name,
+            'user_screen_name': tweet.user.screen_name,
             'tweet_id': tweet.id,
             'mentioned_user_id': user_mention.id,
             'mentioned_user_screen_name': user_mention.screen_name,
@@ -55,7 +55,7 @@ def map_media(db, tweet):
     for media in tweet.media:
         m_data = {
             'user_id': tweet.user.id,
-            'user_sceen_name': tweet.user.screen_name,
+            'user_screen_name': tweet.user.screen_name,
             'tweet_id': tweet.id,
             'media_type': media.type,
             'url': media.media_url
@@ -69,7 +69,7 @@ def map_hashtag(db, tweet):
     for hashtag in tweet.hashtags:
         h_data = {
             'user_id': tweet.user.id,
-            'user_sceen_name': tweet.user.screen_name,
+            'user_screen_name': tweet.user.screen_name,
             'tweet_id': tweet.id,
             'text': hashtag.text,
         }
@@ -82,7 +82,7 @@ def map_url(db, tweet):
     for url in tweet.urls:
         u_data = {
             'user_id': tweet.user.id,
-            'user_sceen_name': tweet.user.screen_name,
+            'user_screen_name': tweet.user.screen_name,
             'tweet_id': tweet.id,
             'url': url.expanded_url,
         }
@@ -105,7 +105,7 @@ def process_tweet(db, tweet):
     t_data = {
         'tweet_id': tweet.id,
         'user_id': tweet.user.id,
-        'user_sceen_name': tweet.user.screen_name,
+        'user_screen_name': tweet.user.screen_name,
         'tweet_type': tweet_type,
         'referenced_tweet_id': referenced_tweet_id
     }
@@ -153,15 +153,26 @@ def upsert_tweets(db, tweets):
         process_tweet(db, tweet)
 
 
-def set_tweets_collected(db, user_id):
+def update_user(db, user_id, collected=True, suspended=False):
     user_table = db['user']
+    result = None
 
-    update_dict = dict(user_id=user_id, tweets_collected=1)
-    result = user_table.update(update_dict, ['user_id'])
-    if result:
-        print('User {} marked as complete'.format(user_id))
-    else:
-        print("Could not update {}".format(user_id))
+    if collected and not suspended:
+        update_dict = dict(user_id=user_id, tweets_collected=1)
+        result = user_table.update(update_dict, ['user_id'])
+
+    elif collected and suspended:
+        update_dict = dict(user_id=user_id,
+                           tweets_collected=1, is_suspended=1)
+        result = user_table.update(update_dict, ['user_id'])
+
+    elif suspended:
+        update_dict = dict(user_id=user_id, is_suspended=1)
+        result = user_table.update(update_dict, ['user_id'])
+
+    if not result:
+        print("Could not update {} to collected: {} and suspended: {}".format(
+            user_id, collected, suspended))
     return result
 
 
@@ -186,10 +197,9 @@ def run(api, connection_string, user_id=None, all_tweets=True):
             if len(tweet_ids) > 0:
                 max_id = min(tweet_ids)
                 upsert_tweets(db, tweets)
-                update_dict = dict(user_id=user_id, tweets_collected=1)
-                user_table.update(update_dict, ['user_id'])
 
             if len(tweets) < 200:
+                set_tweets_collected(db, user_id)
                 print('Finished')
                 break
 
@@ -204,32 +214,24 @@ def run(api, connection_string, user_id=None, all_tweets=True):
 
         if all_tweets:
             max_id = None
-            finished = False
 
             for i in range(16):
-                if finished:
-                    continue
                 tweets = get_tweets(api, user_id, max_id=max_id)
                 tweet_ids = [tweet.id for tweet in tweets]
                 if len(tweet_ids) > 0:
                     max_id = min([tweet.id for tweet in tweets])
                     upsert_tweets(db, tweets)
 
-                if len(tweets) < 200:
-                    finished = True
-
                 print('Got ' + str(i) + ' iteration of tweets for ' + str(user_id))
                 time.sleep(1)
             set_tweets_collected(db, user_id)
-            finished = False
         else:
             tweets = get_tweets(api, user_id)
             upsert_tweets(db, tweets)
             is_suspended = 0
             if len(tweets) == 0:
                 is_suspended = 1
-            update_dict = dict(screen_name=user_id,
-                               tweets_collected=1, is_suspended=is_suspended)
+
             user_table.update(update_dict, ['user_id'])
 
         remaining -= 1
