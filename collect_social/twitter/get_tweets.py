@@ -188,7 +188,7 @@ def run(api, connection_string, user_id=None, all_tweets=True):
         user_ids = []
 
     if user_id:
-        remaining = 16
+        request_limit = 16  # 200 tweets per request
         max_id = None
         while True:
             tweets = get_tweets(api, user_id, max_id=max_id)
@@ -199,12 +199,14 @@ def run(api, connection_string, user_id=None, all_tweets=True):
                 upsert_tweets(db, tweets)
 
             if len(tweets) < 200:
-                set_tweets_collected(db, user_id)
-                print('Finished')
+                update_user(db, user_id, collected=True)
                 break
 
-            remaining -= 1
-            print(str(remaining) + ' requests to go')
+            request_limit -= 1
+            if request_limit <= 0:
+                print('Request limit hit')
+                break
+            print(str(request_limit) + ' requests to go')
 
             time.sleep(1)
 
@@ -224,15 +226,12 @@ def run(api, connection_string, user_id=None, all_tweets=True):
 
                 print('Got ' + str(i) + ' iteration of tweets for ' + str(user_id))
                 time.sleep(1)
-            set_tweets_collected(db, user_id)
+            update_user(db, user_id, collected=True)
         else:
             tweets = get_tweets(api, user_id)
             upsert_tweets(db, tweets)
-            is_suspended = 0
             if len(tweets) == 0:
-                is_suspended = 1
-
-            user_table.update(update_dict, ['user_id'])
+                update_user(db, user_id, collected=True, suspended=True)
 
         remaining -= 1
         time.sleep(1)
