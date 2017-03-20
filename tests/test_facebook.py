@@ -2,6 +2,7 @@ import pytest
 from collect_social.facebook import utils
 from collect_social.facebook import get_comments
 
+
 @pytest.fixture
 def db():
     """Creates a temporary database in memory"""

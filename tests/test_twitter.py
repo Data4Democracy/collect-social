@@ -25,11 +25,14 @@ def api():
     return twitter_api
 
 # TODO whole section is bad/figure out better way
+
+
 @pytest.fixture
 def tweets(api):
     with vcr.use_cassette('./fixtures/test_twitter_get_tweets.yaml', record_mode='none'):
         tweet_list = get_tweets.get_tweets(api, 461594173)
         return tweet_list
+
 
 @pytest.fixture
 def tweet_with_hashtag(tweets):
@@ -127,7 +130,8 @@ def test_update_user_set_suspended_and_collected(db):
 
 def test_update_user_set_suspended_and_not_collected(db):
     db['user'].insert(dict(user_id=11, tweets_collected=0, is_suspended=0))
-    result = get_tweets.update_user(db, user_id=11, collected=False, suspended=True)
+    result = get_tweets.update_user(
+        db, user_id=11, collected=False, suspended=True)
     user = db['user'].find_one(user_id=11)
 
     assert result == 1
@@ -145,7 +149,7 @@ def test_map_hashtag(db, tweet_with_hashtag):
     record = db['hashtag'].find_one(id=1)
 
     assert db['hashtag'].count() == 2
-    for field  in ['user_id', 'user_screen_name', 'tweet_id', 'text']:
+    for field in ['user_id', 'user_screen_name', 'tweet_id', 'text']:
         assert field in record.keys()
 
 

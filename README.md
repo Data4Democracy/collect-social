@@ -141,40 +141,39 @@ If you haven't already, make sure to create a [Twitter app](https://apps.twitter
 This assumes you have a list of Twitter accounts you'd like to use as seeds. This will build a network of those seeds and the accounts the seeds follow, and collect all tweets from 1/1/2016 to now for each of those accounts.
 
 ```python
-from collect_social.twitter.utils import setup_db, setup_seeds
+import os
+from collect_social.twitter.utils import setup_db, setup_seeds, get_api
 from collect_social.twitter.get_profiles import run as run_profiles
 from collect_social.twitter.get_friends import run as run_friends
 from collect_social.twitter.get_tweets import run as run_tweets
 
-# These you generate on developers.twitter.com
-consumer_key = 'YOUR KEY'
-consumer_secret = 'YOUR SECRET'
-access_key = 'YOUR ACCESS KEY'
-access_secret = 'YOUR ACCESS SECRET'
+# twitter API config
+consumer_key = os.environ.get('T_CONSUMER_KEY')
+consumer_secret = os.environ.get('T_CONSUMER_SECRET')
+access_key = os.environ.get('T_ACCESS_KEY')
+access_secret = os.environ.get('T_ACCESS_SECRET')
 
-# Path to your sqlite file
-connection_string = 'sqlite:///db.sqlite'
+# sqlite database path
+connection_string = 'sqlite:///twitter_test.sqlite'
 
-args = [consumer_key, consumer_secret, access_key, access_secret, connection_string]
+# setup twitter API
+api = get_api(consumer_key, consumer_secret, access_key, access_secret)
 
-# Assuming your seed accounts are in a file called `seeds.txt`. Put each screen name
-# on its own line in the file
-seeds = [l.strip() for l in open('seeds.txt').readlines()]
-
+# setup database tables/indexes
 db = setup_db(connection_string)
-setup_seeds(db, consumer_key, consumer_secret, access_key, access_secret, screen_names=seeds)
 
-# get user profiles
-run_profiles(*args)
+# profile(s) to start. Accepts list of screen names/user_ids
+setup_seeds(db, api, screen_names=['<twitter_handle>'])
 
-# get everyone they follow
-run_friends(*args)
+# Get full profile of profiles added via setup_seeds above
+run_profiles(api, connection_string)
 
-# get profiles for newly added users
-run_profiles(*args)
+# Get friends of seed profiles
+run_friends(api, connection_string)
 
-# get everyone's last 3200 tweets
-run_tweets(*args)
+# Get tweets of all profiles added/will
+# continue looping until all tweets collected
+run_tweets(api, connection_string)
 ```
 
 #### Using the data

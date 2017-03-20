@@ -37,7 +37,7 @@ def map_user_mention(db, tweet):
         }
 
         if tweet.retweeted_status is not None and \
-                        tweet.retweeted_status.user.screen_name == user_mention.screen_name:
+                tweet.retweeted_status.user.screen_name == user_mention.screen_name:
             um_data['mention_type'] = 'retweet'
             um_data['mentioned_tweet_id'] = tweet.retweeted_status.id
 
