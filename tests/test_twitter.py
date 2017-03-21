@@ -1,8 +1,10 @@
 import pytest
 import vcr
+from collections import OrderedDict
 from collect_social.twitter import utils
-from collect_social.twitter import get_tweets
+from collect_social.twitter import get_tweets, get_profiles, get_friends
 
+import os
 
 @pytest.fixture
 def db():
@@ -12,11 +14,16 @@ def db():
 
 @pytest.fixture
 def api():
-    consumer_key = 'fake'
-    consumer_secret = 'key'
+    # consumer_key = os.environ.get('T_CONSUMER_KEY')
+    # consumer_secret = os.environ.get('T_CONSUMER_SECRET')
+    # access_key = os.environ.get('T_ACCESS_KEY')
+    # access_secret = os.environ.get('T_ACCESS_SECRET')
 
-    access_key = 'and'
-    access_secret = 'secret'
+    consumer_key = 'a'
+    consumer_secret = 'b'
+    access_key = 'c'
+    access_secret = 'd'
+
     auth_args = [consumer_key, consumer_secret,
                  access_key, access_secret]
 
@@ -24,12 +31,10 @@ def api():
 
     return twitter_api
 
-# TODO whole section is bad/figure out better way
-
 
 @pytest.fixture
 def tweets(api):
-    with vcr.use_cassette('./fixtures/test_twitter_get_tweets.yaml', record_mode='none'):
+    with vcr.use_cassette('./tests/fixtures/test_twitter_get_tweets.yaml', record_mode='none'):
         tweet_list = get_tweets.get_tweets(api, 461594173)
         return tweet_list
 
@@ -67,6 +72,38 @@ def tweet_with_mention(tweets):
     for tweet in tweets:
         if tweet.id == 840186107186802688:
             return tweet
+
+
+@pytest.fixture
+def setup_seed(db):
+    seed = dict(
+        id=1,
+        user_id=461594173,
+        screen_name='bstarling_',
+        profile_collected=0,
+        is_scored=0,
+        followers_collected=0,
+        friends_collected=0,
+        tweets_collected=0,
+        is_seed=1)
+    db['user'].insert(seed)
+
+    return db
+
+
+@pytest.fixture
+def profiles(setup_seed, api):
+    new_users = get_profiles.collect_new_profiles(setup_seed)
+    with vcr.use_cassette('./tests/fixtures/test_get_profiles.yaml', record_mode='none'):
+        profiles = get_profiles.get_profiles(api, [new_users[0]['user_id']])
+        return profiles
+
+
+@pytest.fixture
+def friends(api):
+    with vcr.use_cassette('./tests/fixtures/test_get_friends.yaml', record_mode='none'):
+        friends=get_friends.get_friend_ids(api)
+        return friends
 
 
 def test_get_tweets_authentication_error():
@@ -141,7 +178,7 @@ def test_update_user_set_suspended_and_not_collected(db):
 
 def test_upsert_tweets(db, tweets):
     get_tweets.upsert_tweets(db, tweets)
-    assert db['tweet'].count() == 29
+    assert db['tweet'].count() == 30
 
 
 def test_map_hashtag(db, tweet_with_hashtag):
@@ -177,3 +214,25 @@ def test_map_mentions(db, tweet_with_mention):
     assert db['mention'].count() == 2
     assert record['mentioned_user_screen_name'] == 'GOLDIE_ice'
     assert len(record) == 8
+
+
+def test_get_profiles(profiles):
+    profile = profiles[0]
+    assert profile.screen_name == 'bstarling_'
+    assert profile.friends_count == 299
+
+
+def test_upsert_profile(db, profiles):
+    get_profiles.upsert_profiles(db, profiles)
+
+    user = db['user'].find_one()
+
+    assert user['profile_collected'] == 1
+    assert user['screen_name'] == 'bstarling_'
+
+
+def test_get_friend_ids(friends):
+    assert len(friends[2]) == 299
+
+
+

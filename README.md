@@ -148,6 +148,8 @@ from collect_social.twitter.get_friends import run as run_friends
 from collect_social.twitter.get_tweets import run as run_tweets
 
 # twitter API config
+# assumes twitter API keys are setup as env variables
+# you can add directly to script but be careful checking in credentials to GitHub repo
 consumer_key = os.environ.get('T_CONSUMER_KEY')
 consumer_secret = os.environ.get('T_CONSUMER_SECRET')
 access_key = os.environ.get('T_ACCESS_KEY')
