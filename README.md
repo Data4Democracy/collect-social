@@ -1,6 +1,7 @@
 # Collect Social: Simply collect public social media content
 
-[![Build Status](https://travis-ci.org/Data4Democracy/collect-social.svg?branch=master)](https://travis-ci.org/Data4Democracy/collect-social)
+## Inactive
+New development has moved to [smtk](https://github.com/Data4Democracy/smtk)
 
 
 **Maintainers:** Maintainers have write access to the repository. They are responsible for reviewing pull requests, providing feedback and ensuring consistency.
